@@ -11,7 +11,33 @@ lcd.color = [100, 0, 0]
 #lcd.color = [0,0,0]
 lcd.message = "How're you doing\nkiddo?"
 time.sleep(1)
-for i in range(15,-1,-1):
+for i in range(5,-1,-1):
     lcd.message = "How're you doing\nkiddo? Bye in {}sec".format(i)
     time.sleep(1)
-lcd.color = [0,0,0]
+#lcd.color = [0,0,0]
+lcd.clear()    
+    
+while True:
+    if lcd.left_button:
+        print("Left!")
+        lcd.message = "Left!"
+
+    elif lcd.up_button:
+        print("Up!")
+        lcd.message = "Up!"
+
+    elif lcd.down_button:
+        print("Down!")
+        lcd.message = "Down!"
+
+    elif lcd.right_button:
+        print("Right!")
+        lcd.message = "Right!"
+
+    elif lcd.select_button:
+        print("Select!")
+        lcd.message = "Select!"
+
+    else:
+        time.sleep(0.1)
+        lcd.clear()    
