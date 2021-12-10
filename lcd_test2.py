@@ -2,6 +2,7 @@ import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 import time
+import RPi.GPIO as GPIO
 lcd_columns = 16
 lcd_rows = 2
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -33,10 +34,12 @@ while True:
     elif lcd.right_button:
         print("Right!")
         lcd.message = "Right!"
+        GPIO.output(5, 0)
 
     elif lcd.select_button:
         print("Select!")
         lcd.message = "Select!"
+        GPIO.output(5, 1)
 
     else:
         time.sleep(0.1)
