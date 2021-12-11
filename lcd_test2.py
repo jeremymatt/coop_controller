@@ -28,6 +28,8 @@ for i in range(2,-1,-1):
 #lcd.color = [0,0,0]
 lcd.clear()    
     
+"""
+
 while True:
     if lcd.left_button:
         print("Left!")
@@ -62,3 +64,4 @@ while True:
     else:
         time.sleep(0.1)
         lcd.clear()    
+"""
