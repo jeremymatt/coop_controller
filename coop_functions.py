@@ -30,6 +30,7 @@ class coop_controller:
         self.get_sunrise_sunset()
         self.init_pins()
         self.init_flags()
+        self.init_button_menu()
         self.init_display()
         
         
