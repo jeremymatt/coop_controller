@@ -72,6 +72,7 @@ class coop_controller:
         
         menu = 1
         sub_menu = False
+        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = self.disp_door_times
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
@@ -82,6 +83,7 @@ class coop_controller:
         
         menu = 1
         sub_menu = True
+        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = self.disp_light_times
         self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
@@ -92,6 +94,7 @@ class coop_controller:
         
         menu = 2
         sub_menu = False
+        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override door'
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
@@ -102,6 +105,7 @@ class coop_controller:
         
         menu = 2
         sub_menu = True
+        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override door\nUD:op/cls,LR:stp'
         self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
@@ -112,6 +116,7 @@ class coop_controller:
         
         menu = 3
         sub_menu = False
+        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override light'
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
@@ -122,6 +127,7 @@ class coop_controller:
         
         menu = 3
         sub_menu = True
+        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override light\nUD:on/off'
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
