@@ -278,7 +278,7 @@ class coop_controller:
     
     
     def init_flags(self):
-        self.cur_day = self.cur_day.day
+        self.cur_day = self.cur_time.day
         self.light_is_on = None
         self.door_is_open = None
         self.door_is_opening = False
