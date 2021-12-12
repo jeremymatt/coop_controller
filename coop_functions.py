@@ -320,7 +320,8 @@ class coop_controller:
         self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
-        self.display_message = 'Welcome to the\nJungle!'
+        # self.display_message = 'Welcome to the\nJungle!'
+        self.display_message = 'Hi'
         self.prev_display_message = 'none'
         
     
