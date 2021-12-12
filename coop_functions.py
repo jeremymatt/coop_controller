@@ -228,7 +228,7 @@ class coop_controller:
         GPIO.output(self.pins['door_lower'], GPIO.LOW)
         self.door_is_opening = False
         self.door_is_closing = False
-        self.door_move_end_time = None
+        self.door_move_end_time = self.cur_time+self.long_time
         
     def door_raise(self):
         GPIO.output(self.pins['door_lower'], GPIO.LOW)
@@ -325,6 +325,13 @@ class coop_controller:
         if self.cur_day != self.cur_time.day:
             self.cur_day = self.cur_time.day
             self.get_sunrise_sunset()
+            
+        if self.cur_time > self.door_move_end_time:
+            self.door_stop()
+            string,parts = self.get_datetime_string(self.cur_time)
+            msg = 'Chicken Door Malfuntion:\n Door Didn\'t Work \n time: {}'.format(string)
+            self.send_notification(msg)
+            
         
             
     def check_display_status(self):
@@ -375,7 +382,7 @@ class coop_controller:
         self.door_state_override = None #none, open, close
         self.light_state_override = None #none, on, off
         self.new_day = False
-        self.door_move_end_time = None
+        self.door_move_end_time = self.cur_time+self.long_time
         self.cur_menu = -1
         self.in_sub_menu = False
         self.door_travel_time = dt.timedelta(seconds = settings.expected_door_travel_time)
