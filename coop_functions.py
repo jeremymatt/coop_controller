@@ -364,13 +364,14 @@ class coop_controller:
     
     
     def init_flags(self):
+        self.long_time = dt.timedelta(days=365*100)
         self.cur_day = self.cur_time.day
         self.light_is_on = None
         self.door_is_open = False
         self.door_is_closed = False
         self.door_is_opening = False
         self.door_is_closing = False
-        self.door_closed_stop_time = None
+        self.door_closed_stop_time = self.cur_time+self.long_time
         self.door_state_override = None #none, open, close
         self.light_state_override = None #none, on, off
         self.new_day = False
@@ -378,7 +379,6 @@ class coop_controller:
         self.cur_menu = -1
         self.in_sub_menu = False
         self.door_travel_time = dt.timedelta(seconds = settings.expected_door_travel_time)
-        self.long_time = dt.timedelta(days=365*100)
         
        
     def init_pins(self):
