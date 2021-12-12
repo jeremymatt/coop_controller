@@ -52,12 +52,16 @@ class coop_controller:
         
         
         if self.door_closed_switch and self.door_is_closing:
-            self.door_stop()
             self.door_is_open = False
             self.door_is_closed = True
             self.door_is_closing = False
             self.door_is_opening = False
-            self.door_move_end_time = self.cur_time + dt.timedelta(days=365*100)
+            self.door_move_end_time = self.cur_time + self.long_time
+            self.door_closed_stop_time = self.cur_time + dt.timedelta(seconds=2)
+            
+        if self.cur_time>self.door_closed_stop_time:
+            self.door_closed_stop_time = self.cur_time + self.long_time
+            self.door_stop()
            
         if self.door_open_switch and self.door_is_opening:
             self.door_stop()
@@ -366,6 +370,7 @@ class coop_controller:
         self.door_is_closed = False
         self.door_is_opening = False
         self.door_is_closing = False
+        self.door_closed_stop_time = None
         self.door_state_override = None #none, open, close
         self.light_state_override = None #none, on, off
         self.new_day = False
@@ -373,6 +378,7 @@ class coop_controller:
         self.cur_menu = -1
         self.in_sub_menu = False
         self.door_travel_time = dt.timedelta(seconds = settings.expected_door_travel_time)
+        self.long_time = dt.timedelta(days=365*100)
         
        
     def init_pins(self):
