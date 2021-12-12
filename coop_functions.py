@@ -263,6 +263,9 @@ class coop_controller:
     def check_times(self):
         self.daytime = (self.cur_time>self.sunrise) & (self.cur_time<self.close_time)
         self.display_time_exceeded = self.cur_time>self.display_off_time
+        if self.cur_day != self.cur_time.day:
+            self.cur_day = self.cur_time.day
+            self.get_sunrise_sunset()
         
             
     def check_display_status(self):
