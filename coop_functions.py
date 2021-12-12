@@ -298,7 +298,7 @@ class coop_controller:
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         self.display_message = 'Welcome to the\nJungle!'
-        self.prev_display_message = 'Welcome to the\nJungle!'
+        self.prev_display_message = 'none'
         
     
     def display_on(self):
