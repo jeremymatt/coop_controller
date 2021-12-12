@@ -57,7 +57,7 @@ class coop_controller:
             self.door_is_closed = True
             self.door_is_closing = False
             self.door_is_opening = False
-            self.door_move_end_time = self.cur_time + dt.timedelta(years=100)
+            self.door_move_end_time = self.cur_time + dt.timedelta(days=365*100)
            
         if self.door_open_switch and self.door_is_opening:
             self.door_stop()
@@ -65,7 +65,7 @@ class coop_controller:
             self.door_is_closed = False
             self.door_is_closing = False
             self.door_is_opening = False
-            self.door_move_end_time = self.cur_time + dt.timedelta(years=100)
+            self.door_move_end_time = self.cur_time + dt.timedelta(days=365*100)
             
      
     def check_inputs(self):
