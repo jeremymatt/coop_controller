@@ -165,10 +165,15 @@ class coop_controller:
             
             self.button_menu[self.cur_menu][self.in_sub_menu][button]()
             
-            if type(self.button_menu[self.cur_menu][self.in_sub_menu]['msg']) == str:
-                msg = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
+            self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
+            
+    def update_display(self):
+        if self.display_is_on:    
+            if type(self.display_message) == str:
+                msg = self.display_message
             else:
-                msg = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']()
+                msg = self.display_message()
+            self.lcd.clear()
             self.lcd.message = msg
         
             
@@ -267,7 +272,7 @@ class coop_controller:
         self.lcd = character_lcd.Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
-        self.lcd.message = 'Welcome to the\nJungle!'
+        self.display_message = 'Welcome to the\nJungle!'
         
     
     def display_on(self):
@@ -278,6 +283,7 @@ class coop_controller:
         self.display_is_on = False
         self.cur_menu = -1
         self.lcd.clear()
+        self.display_message = 'None'
         self.lcd.color = [0, 0, 0]
     
     
