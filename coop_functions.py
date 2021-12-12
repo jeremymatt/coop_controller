@@ -127,7 +127,7 @@ class coop_controller:
         sub_menu = True
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override light\nUD:on/off'
-        self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
+        self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
         self.button_menu[menu][sub_menu]['left'] = None
         self.button_menu[menu][sub_menu]['right'] = None
         self.button_menu[menu][sub_menu]['up'] = self.light_on
@@ -226,10 +226,12 @@ class coop_controller:
         
             
     def next_menu(self):
+        self.in_sub_menu = False
         self.cur_menu +=1
         self.cur_menu %= (max(self.button_menu.keys())+1)
         
     def prev_menu(self):
+        self.in_sub_menu = False
         self.cur_menu -= 1
         if self.cur_menu < 0:
             self.cur_menu = max(self.button_menu.keys())
