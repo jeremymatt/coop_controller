@@ -40,12 +40,18 @@ class coop_controller:
             self.get_cur_time()
             self.check_times()
             self.check_buttons()
+            self.check_inputs()
             
             
             
             
             self.check_display_status()
      
+    def check_inputs(self):
+        self.door_closed_switch = GPIO.input(self.pins['door_closed'])==GPIO.LOW
+        self.door_open_switch = GPIO.input(self.pins['door_open'])==GPIO.LOW
+        
+    
     def init_button_menu(self):
         self.button_menu = {}
         menu = -1
@@ -132,6 +138,17 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['right'] = None
         self.button_menu[menu][sub_menu]['up'] = self.light_on
         self.button_menu[menu][sub_menu]['down'] = self.light_off
+        
+        menu = 4
+        sub_menu = False
+        self.button_menu[menu] = {}
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_sensor_state
+        self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
+        self.button_menu[menu][sub_menu]['left'] = None
+        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['up'] = self.next_menu
+        self.button_menu[menu][sub_menu]['down'] = self.prev_menu
             
     def check_buttons(self):
         
@@ -186,6 +203,7 @@ class coop_controller:
         GPIO.output(self.pins['door_lower'], GPIO.LOW)
         self.door_is_opening = False
         self.door_is_closing = False
+        self.door_move_end_time = None
         
     def door_raise(self):
         GPIO.output(self.pins['door_lower'], GPIO.LOW)
@@ -193,6 +211,7 @@ class coop_controller:
         GPIO.output(self.pins['door_raise'], GPIO.HIGH)
         self.door_is_opening = True
         self.door_is_closing = False
+        self.door_move_end_time = self.cur_time+self.door_travel_time
         
     def door_lower(self):
         GPIO.output(self.pins['door_raise'], GPIO.LOW)
@@ -200,6 +219,7 @@ class coop_controller:
         GPIO.output(self.pins['door_lower'], GPIO.HIGH)
         self.door_is_opening = False
         self.door_is_closing = True
+        self.door_move_end_time = self.cur_time+self.door_travel_time
         
         
     def light_on(self):
@@ -221,6 +241,20 @@ class coop_controller:
         self.cur_menu -= 1
         if self.cur_menu < 0:
             self.cur_menu = max(self.button_menu.keys())
+            
+    def disp_sensor_state(self):
+        if self.door_closed_switch:
+            DC = 'cl'
+        else:
+            DC = 'op'
+            
+        if self.door_open_switch:
+            DO = 'cl'
+        else:
+            DO = 'op'
+            
+        msg = 'Sensor state\nDC:{} DO:{}'.format(DC,DO)
+        return msg
             
     def disp_current_time(self):
         string,parts = self.get_datetime_string(self.cur_time)
@@ -312,7 +346,7 @@ class coop_controller:
         self.door_state_override = None #none, open, close
         self.light_state_override = None #none, on, off
         self.new_day = False
-        self.door_move_start_time = None
+        self.door_move_end_time = None
         self.cur_menu = -1
         self.in_sub_menu = False
         self.door_travel_time = dt.timedelta(seconds = settings.expected_door_travel_time)
@@ -327,7 +361,7 @@ class coop_controller:
         
         inputs = [16,19]
         for inpt in inputs:
-            GPIO.setup(inpt,GPIO.IN)
+            GPIO.setup(inpt,GPIO.IN, pull_up_down=GPIO.PUD_UP)
             
         self.pins = {
             'light':13,
