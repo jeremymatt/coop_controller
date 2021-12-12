@@ -136,28 +136,18 @@ class coop_controller:
     def check_buttons(self):
         
         if self.lcd.left_button:
-            print('left')
-            print('cur_menu: {}, submenu: {}'.format(self.cur_menu,self.in_sub_menu))
             self.do_button('left')
         
         elif self.lcd.up_button:
-            print('up')
-            print('cur_menu: {}, submenu: {}'.format(self.cur_menu,self.in_sub_menu))
             self.do_button('up')
 
         elif self.lcd.down_button:
-            print('down')
-            print('cur_menu: {}, submenu: {}'.format(self.cur_menu,self.in_sub_menu))
             self.do_button('down')
 
         elif self.lcd.right_button:
-            print('right')
-            print('cur_menu: {}, submenu: {}'.format(self.cur_menu,self.in_sub_menu))
             self.do_button('right')
 
         elif self.lcd.select_button:
-            print('select')
-            print('cur_menu: {}, submenu: {}'.format(self.cur_menu,self.in_sub_menu))
             self.do_button('select')
             
         
@@ -177,10 +167,6 @@ class coop_controller:
             self.button_menu[self.cur_menu][self.in_sub_menu][button]()
             
             self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
-            print('processed button {}'.format(button))
-            print('cur_menu: {}, submenu: {}'.format(self.cur_menu,self.in_sub_menu))
-        else:
-            print('inactive button')
             
     def update_display(self):
         if self.display_is_on:    
