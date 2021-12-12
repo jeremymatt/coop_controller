@@ -51,20 +51,21 @@ class coop_controller:
     def check_door(self):
         
         
-        # self.door_is_open = False
-        # self.door_is_closed = False
-        
-        if self.door_closed_switch:
+        if self.door_closed_switch and self.door_is_closing:
             self.door_stop()
             self.door_is_open = False
             self.door_is_closed = True
-            
-            
-        
-        if self.door_open_switch:
+            self.door_is_closing = False
+            self.door_is_opening = False
+            self.door_move_end_time = self.cur_time + dt.timedelta(years=100)
+           
+        if self.door_open_switch and self.door_is_opening:
             self.door_stop()
             self.door_is_open = True
             self.door_is_closed = False
+            self.door_is_closing = False
+            self.door_is_opening = False
+            self.door_move_end_time = self.cur_time + dt.timedelta(years=100)
             
      
     def check_inputs(self):
