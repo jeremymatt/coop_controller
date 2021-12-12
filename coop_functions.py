@@ -227,7 +227,7 @@ class coop_controller:
             
     def next_menu(self):
         self.cur_menu +=1
-        self.cur_menu %=max(self.button_menu.keys())
+        self.cur_menu %= (max(self.button_menu.keys())+1)
         
     def prev_menu(self):
         self.cur_menu -= 1
@@ -268,7 +268,7 @@ class coop_controller:
         minute = str(dto.minute).zfill(2)
         second = str(dto.second).zfill(2)
         
-        string = '{}-{} {}:{}:{}'.format(month,day,hour,minute,second)
+        string = '{}-{} {}:{}'.format(month,day,hour,minute)
         parts = (month,day,hour,minute,second)
         return string,parts       
             
