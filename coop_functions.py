@@ -169,7 +169,7 @@ class coop_controller:
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = self.disp_sensor_state
-        self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
+        self.button_menu[menu][sub_menu]['select'] = None
         self.button_menu[menu][sub_menu]['left'] = None
         self.button_menu[menu][sub_menu]['right'] = None
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
