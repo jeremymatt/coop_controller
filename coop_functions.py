@@ -188,8 +188,11 @@ class coop_controller:
                 msg = self.display_message
             else:
                 msg = self.display_message()
-            self.lcd.clear()
-            self.lcd.message = msg
+                
+            if self.prev_display_message != msg:
+                self.lcd.clear()
+                self.lcd.message = msg
+                self.prev_display_message = msg
         
             
     def door_stop(self):
@@ -293,6 +296,7 @@ class coop_controller:
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         self.display_message = 'Welcome to the\nJungle!'
+        self.prev_display_message = 'Welcome to the\nJungle!'
         
     
     def display_on(self):
@@ -304,6 +308,7 @@ class coop_controller:
         self.cur_menu = -1
         self.lcd.clear()
         self.display_message = 'None'
+        self.in_sub_menu = False
         self.lcd.color = [0, 0, 0]
     
     
