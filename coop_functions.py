@@ -83,7 +83,6 @@ class coop_controller:
         
         menu = 1
         sub_menu = True
-        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = self.disp_light_times
         self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
@@ -105,7 +104,6 @@ class coop_controller:
         
         menu = 2
         sub_menu = True
-        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override door\nUD:op/cls,LR:stp'
         self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
@@ -127,7 +125,6 @@ class coop_controller:
         
         menu = 3
         sub_menu = True
-        self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override light\nUD:on/off'
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
@@ -212,7 +209,7 @@ class coop_controller:
     def prev_menu(self):
         self.cur_menu -= 1
         if self.cur_menu < 0:
-            self.cur_menu = len(self.button_menu.keys())-1
+            self.cur_menu = max(self.button_menu.keys())
             
     def disp_current_time(self):
         string,parts = self.get_datetime_string(self.cur_time)
