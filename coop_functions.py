@@ -209,7 +209,7 @@ class coop_controller:
             
     def next_menu(self):
         self.cur_menu +=1
-        self.cur_menu %=len(self.button_menu.keys())
+        self.cur_menu %=max(self.button_menu.keys())
         
     def prev_menu(self):
         self.cur_menu -= 1
