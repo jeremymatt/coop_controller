@@ -346,7 +346,7 @@ class coop_controller:
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
-        self.display_message = 'Hi'
+        self.display_message = 'Starting the\nstream'
         self.prev_display_message = 'none'
         
     
