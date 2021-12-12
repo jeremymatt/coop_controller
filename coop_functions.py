@@ -41,11 +41,31 @@ class coop_controller:
             self.check_times()
             self.check_buttons()
             self.check_inputs()
-            
+            self.check_door()
             
             
             
             self.check_display_status()
+            
+            
+    def check_door(self):
+        
+        
+        # self.door_is_open = False
+        # self.door_is_closed = False
+        
+        if self.door_closed_switch:
+            self.door_stop()
+            self.door_is_open = False
+            self.door_is_closed = True
+            
+            
+        
+        if self.door_open_switch:
+            self.door_stop()
+            self.door_is_open = True
+            self.door_is_closed = False
+            
      
     def check_inputs(self):
         self.door_closed_switch = GPIO.input(self.pins['door_closed'])==GPIO.LOW
@@ -341,7 +361,8 @@ class coop_controller:
     def init_flags(self):
         self.cur_day = self.cur_time.day
         self.light_is_on = None
-        self.door_is_open = None
+        self.door_is_open = False
+        self.door_is_closed = False
         self.door_is_opening = False
         self.door_is_closing = False
         self.door_state_override = None #none, open, close
