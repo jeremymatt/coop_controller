@@ -669,13 +669,13 @@ class coop_controller:
         
         client = Client(settings.account_sid, settings.auth_token) 
          
-        # message = client.messages.create(  
-        #                               messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
-        #                               body=message,      
-        #                               to=address 
-        #                           ) 
+        message = client.messages.create(  
+                                      messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
+                                      body=message,      
+                                      to=address 
+                                  ) 
         
-        # print(message.sid)
+        print(message.sid)
         
         print('Sending error message: \n{}'.format(message))
          
