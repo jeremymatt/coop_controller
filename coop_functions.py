@@ -87,23 +87,29 @@ class coop_controller:
             
             
     def print_state(self):
-        print('Door is open: {}'.format(self.door_is_open))
+        print('\nDoor is open: {}'.format(self.door_is_open))
         print('Door is opening: {}'.format(self.door_is_opening))
         print('Door open switch triggered: {}'.format(self.door_open_switch))
         print('Door is closed: {}'.format(self.door_is_closed))
         print('Door is closing: {}'.format(self.door_is_closing))
         print('Door closed switch triggered: {}'.format(self.door_closed_switch))
+        print('Door override: {}'.format(self.Door_state_override))
         print('Light is on: {}'.format(self.light_is_on))
+        print('Light override: {}'.format(self.light_state_override))
         print('IN ERROR STATE: {}'.format(self.error_state))
         print('current menu: {}'.format(self.cur_menu))
         print('In submenu: {}'.format(self.in_sub_menu))
         print('Items in message send queue: {}'.format(len(self.notification_list)))
+        print('Menu Message: {}'.format(self.msg))
         
             
     def check_error_state(self):
         display_state = True
         
+        in_err_state = False
+        
         while self.error_state:
+            in_err_state = True
             self.lcd.color = [100, 0, 0]
             self.lcd.message = self.error_msg
             disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
@@ -112,11 +118,17 @@ class coop_controller:
             if self.cur_time>disp_blink_time:
                 if display_state:
                     self.lcd.color = [0,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 else:
                     self.lcd.color = [100,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.75)
-                    print('IN ERROR STATE')
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=1.5)
+                    
+        if in_err_state:
+            self.display_on()
+            self.cur_menu = 0
+            self.in_sub_menu = False
+            self.update_display()
+            
             
             
             
@@ -156,25 +168,25 @@ class coop_controller:
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
             
-        if self.door_open_time and not (self.door_is_open or self.door_is_opening):
+        if self.door_open_time and not (self.door_is_open or self.door_is_opening) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             msg = 'Chicken Door Opening:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_raise()
             
-        if not self.door_open_time and not (self.door_is_closed or self.door_is_closing):
+        if not self.door_open_time and not (self.door_is_closed or self.door_is_closing) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             msg = 'Chicken Door Closing:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_lower()
             
-        if self.light_on_time and not self.light_is_on:
+        if self.light_on_time and not self.light_is_on and not self.light_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             msg = 'Chicken light turning on:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.light_on()
             
-        if not self.light_on_time and self.light_is_on:
+        if not self.light_on_time and self.light_is_on and not self.light_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             msg = 'Chicken light turning off:\n  time: {}'.format(string)
             self.queue_notification(msg)
@@ -349,14 +361,14 @@ class coop_controller:
     def update_display(self):
         if self.display_is_on:    
             if type(self.display_message) == str:
-                msg = self.display_message
+                self.msg = self.display_message
             else:
-                msg = self.display_message()
+                self.msg = self.display_message()
                 
-            if self.prev_display_message != msg:
+            if self.prev_display_message != self.msg:
                 self.lcd.clear()
-                self.lcd.message = msg
-                self.prev_display_message = msg
+                self.lcd.message = self.msg
+                self.prev_display_message = self.msg
         
     def override_door_raise(self):
         self.door_state_override = True
@@ -555,6 +567,7 @@ class coop_controller:
             if self.display_time_exceeded:
                 if self.door_state_override or self.light_state_override:
                     self.cur_menu = -2
+                    self.display_message = self.disp_override()
                     self.in_sub_menu = False
                     self.update_display()
                 else:
