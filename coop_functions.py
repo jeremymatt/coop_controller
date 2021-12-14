@@ -93,7 +93,7 @@ class coop_controller:
         print('Door is closed: {}'.format(self.door_is_closed))
         print('Door is closing: {}'.format(self.door_is_closing))
         print('Door closed switch triggered: {}'.format(self.door_closed_switch))
-        print('Door override: {}'.format(self.Door_state_override))
+        print('Door override: {}'.format(self.door_state_override))
         print('Light is on: {}'.format(self.light_is_on))
         print('Light override: {}'.format(self.light_state_override))
         print('IN ERROR STATE: {}'.format(self.error_state))
