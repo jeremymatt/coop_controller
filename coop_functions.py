@@ -119,10 +119,10 @@ class coop_controller:
             if self.cur_time>disp_blink_time:
                 if display_state:
                     self.lcd.color = [0,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                 else:
                     self.lcd.color = [100,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=1.5)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                     
         if in_err_state:
             self.display_on()
