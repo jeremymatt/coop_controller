@@ -148,14 +148,17 @@ class coop_controller:
             self.lcd.message = self.error_msg
             disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
             self.get_cur_time()
+            self.check_send_notification_time()
             self.check_buttons()
             if self.cur_time>disp_blink_time:
                 if display_state:
                     self.lcd.color = [0,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=5)
+                    print('display off')
                 else:
                     self.lcd.color = [100,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=5)
+                    print('display on')
                     
         if in_err_state:
             self.display_on()
@@ -558,22 +561,29 @@ class coop_controller:
     def check_times(self):
         self.door_open_time = (self.cur_time>self.sunrise) & (self.cur_time<self.close_time)
         
-        
-        
         self.light_on_time = (self.cur_time>self.sunrise) & (self.cur_time<self.sunset)
         
         
+        self.check_send_notification_time()
         
+        self.check_display_time()
+        
+        self.check_door_move_time()
+            
+            
+            
+    def check_send_notification_time(self):
         if (self.cur_time > self.send_next_message_time) and (len(self.notification_list)>0):
             self.send_next_message_time = self.cur_time + dt.timedelta(seconds=1.5)
             self.send_next_notification()
-        
-        
+            
+    def check_display_time(self):
         self.display_time_exceeded = self.cur_time>self.display_off_time
         if self.cur_day != self.cur_time.day:
             self.cur_day = self.cur_time.day
             self.get_sunrise_sunset()
             
+    def check_door_move_time(self):
         if self.cur_time > self.door_move_end_time:
             string,parts = self.get_datetime_string(self.cur_time)
             if self.door_is_closing:
@@ -594,7 +604,6 @@ class coop_controller:
             self.door_stop()
             self.queue_notification(msg)
             
-        
             
     def check_display_status(self):
         if self.display_is_on:
@@ -608,7 +617,6 @@ class coop_controller:
                     self.display_off()
             else:
                 self.update_display()
-            
             
         
         
