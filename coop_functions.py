@@ -41,7 +41,7 @@ def restart():
 def send_crash_notification():
     ct = dt.datetime.now()
     y = ct.year
-    m = str(ct.month).zfill(2)
+    mo = str(ct.month).zfill(2)
     d = str(ct.day).zfill(2)
     h = str(ct.hour).zfill(2)
     m = str(ct.minute).zfill(2)
@@ -52,7 +52,7 @@ def send_crash_notification():
          
         message = client.messages.create(  
                                       messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
-                                      body='*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,m,d,h,m),      
+                                      body='*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,mo,d,h,m),      
                                       to=address 
                                   ) 
          
