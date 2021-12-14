@@ -157,12 +157,10 @@ class coop_controller:
                 if display_state:
                     self.lcd.color = [0,0,0]
                     disp_blink_time = self.cur_time + dt.timedelta(seconds=.5)
-                    print('display off')
                     display_state = False
                 else:
                     self.lcd.color = [100,0,0]
                     disp_blink_time = self.cur_time + dt.timedelta(seconds=.75)
-                    print('display on')
                     display_state = True
                     
         if in_err_state:
@@ -196,7 +194,7 @@ class coop_controller:
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
-            self.door_closed_stop_time = self.cur_time + dt.timedelta(seconds=2)
+            self.door_closed_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
             
         if self.cur_time>self.door_closed_stop_time:
             self.door_closed_stop_time = self.cur_time + self.long_time
