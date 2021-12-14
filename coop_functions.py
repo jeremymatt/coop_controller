@@ -143,11 +143,13 @@ class coop_controller:
         in_err_state = False
         
         disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
-        self.lcd.color = [100, 0, 0]
-        self.lcd.message = self.error_msg
         
         while self.error_state:
-            in_err_state = True
+            if not in_err_state:
+                self.lcd.color = [100, 0, 0]
+                self.lcd.message = self.error_msg
+                in_err_state = True
+                
             self.get_cur_time()
             self.check_send_notification_time()
             self.check_buttons()
