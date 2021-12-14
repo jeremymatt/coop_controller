@@ -17,7 +17,7 @@ d = str(dt.day).zfill(2)
 h = str(dt.hour).zfill(2)
 m = str(dt.minute).zfill(2)
 s = str(dt.second).zfill(2)
-sys.stdout = open('{}-{}-{}_{}-{}-{}_log.txt'.format(y,m,d,h,m,s), 'w')
+# sys.stdout = open('{}-{}-{}_{}-{}-{}_log.txt'.format(y,m,d,h,m,s), 'w')
 
 controller = CF.coop_controller()
 try:
