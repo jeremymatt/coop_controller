@@ -7,8 +7,9 @@ Created on Tue Nov 23 08:43:37 2021
 
 import datetime as dt
 import time
-from suntime import Sun, SunTimeException
+from suntime import Sun
 
+from twilio.rest import Client 
 
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -21,7 +22,40 @@ import smtplib
 import settings
 from email.message import EmailMessage
 
+import os
 
+def restart():
+    os.system('sudo reboot')
+    
+    
+    """
+    #https://www.ridgesolutions.ie/index.php/2013/02/22/raspberry-pi-restart-shutdown-your-pi-from-python-code/
+    command = "/usr/bin/sudo /sbin/shutdown -r now"
+    import subprocess
+    process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    output = process.communicate()[0]
+    print(output)
+    """
+
+
+def send_crash_notification():
+    ct = dt.datetime.now()
+    y = ct.year
+    m = str(ct.month).zfill(2)
+    d = str(ct.day).zfill(2)
+    h = str(ct.hour).zfill(2)
+    m = str(ct.minute).zfill(2)
+    for address in settings.phone_numbers:
+    
+        
+        client = Client(settings.account_sid, settings.auth_token) 
+         
+        message = client.messages.create(  
+                                      messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
+                                      body='*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,m,d,h,m),      
+                                      to=address 
+                                  ) 
+         
 
 class coop_controller:
     
@@ -39,6 +73,7 @@ class coop_controller:
         while True:
             self.get_cur_time()
             self.check_times()
+            self.check_error_state()
             self.check_buttons()
             self.check_inputs()
             self.check_door()
@@ -47,9 +82,40 @@ class coop_controller:
             
             self.check_display_status()
             
+    def check_error_state(self):
+        display_state = True
+        
+        self.lcd.color = [100, 0, 0]
+        self.lcd.message = self.error_msg
+        disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
+        while self.error_state:
+            self.get_cur_time()
+            self.check_buttons()
+            if self.cur_time>disp_blink_time:
+                if display_state:
+                    self.lcd.color = [0,0,0]
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.25)
+                else:
+                    self.lcd.color = [100,0,0]
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.25)
+            
+            
             
     def check_door(self):
         
+        if self.door_closed_switch and self.door_open_switch:
+            string,parts = self.get_datetime_string(self.cur_time)
+            msg = 'Chicken Door Malfuntion:\n  Both switches closed \n  time: {}'.format(string)
+            self.error_msg = 'ERR:bth swch cls\nSelect ==> clear'
+          
+            
+            self.error_state = True
+            self.cur_menu = -3
+            self.in_sub_menu = False
+            
+            self.door_stop()
+            self.queue_notification(msg)
+            
         
         if self.door_closed_switch and self.door_is_closing:
             self.door_is_open = False
@@ -69,9 +135,33 @@ class coop_controller:
             self.door_is_closed = False
             self.door_is_closing = False
             self.door_is_opening = False
-            self.door_move_end_time = self.cur_time + dt.timedelta(days=365*100)
+            self.door_move_end_time = self.cur_time + self.long_time
             
-     
+        if self.door_open_time and not (self.door_is_open or self.door_is_opening):
+            string,parts = self.get_datetime_string(self.cur_time)
+            msg = 'Chicken Door Opening:\n  time: {}'.format(string)
+            self.queue_notification(msg)
+            self.door_raise()
+            
+        if not self.door_open_time and not (self.door_is_closed or self.door_is_closing):
+            string,parts = self.get_datetime_string(self.cur_time)
+            msg = 'Chicken Door Closing:\n  time: {}'.format(string)
+            self.queue_notification(msg)
+            self.door_lower()
+            
+        if self.light_on_time and not self.light_is_on:
+            string,parts = self.get_datetime_string(self.cur_time)
+            msg = 'Chicken light turning on:\n  time: {}'.format(string)
+            self.queue_notification(msg)
+            self.light_on()
+            
+        if not self.light_on_time and self.light_is_on:
+            string,parts = self.get_datetime_string(self.cur_time)
+            msg = 'Chicken light turning off:\n  time: {}'.format(string)
+            self.queue_notification(msg)
+            self.light_off()
+            
+            
     def check_inputs(self):
         self.door_closed_switch = GPIO.input(self.pins['door_closed'])==GPIO.LOW
         self.door_open_switch = GPIO.input(self.pins['door_open'])==GPIO.LOW
@@ -79,6 +169,28 @@ class coop_controller:
     
     def init_button_menu(self):
         self.button_menu = {}
+        menu = -3
+        sub_menu = False
+        self.button_menu[menu] = {}
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = self.cancel_error
+        self.button_menu[menu][sub_menu]['select'] = None
+        self.button_menu[menu][sub_menu]['left'] = None
+        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['up'] = None
+        self.button_menu[menu][sub_menu]['down'] = None
+        
+        menu = -2
+        sub_menu = False
+        self.button_menu[menu] = {}
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_override
+        self.button_menu[menu][sub_menu]['select'] = None
+        self.button_menu[menu][sub_menu]['left'] = None
+        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['up'] = self.next_menu
+        self.button_menu[menu][sub_menu]['down'] = self.prev_menu
+        
         menu = -1
         sub_menu = False
         self.button_menu[menu] = {}
@@ -140,8 +252,8 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
         self.button_menu[menu][sub_menu]['left'] = self.door_stop
         self.button_menu[menu][sub_menu]['right'] = self.door_stop
-        self.button_menu[menu][sub_menu]['up'] = self.door_raise
-        self.button_menu[menu][sub_menu]['down'] = self.door_lower
+        self.button_menu[menu][sub_menu]['up'] = self.override_door_raise
+        self.button_menu[menu][sub_menu]['down'] = self.override_door_lower
         
         menu = 3
         sub_menu = False
@@ -161,8 +273,8 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
         self.button_menu[menu][sub_menu]['left'] = None
         self.button_menu[menu][sub_menu]['right'] = None
-        self.button_menu[menu][sub_menu]['up'] = self.light_on
-        self.button_menu[menu][sub_menu]['down'] = self.light_off
+        self.button_menu[menu][sub_menu]['up'] = self.override_light_on
+        self.button_menu[menu][sub_menu]['down'] = self.override_light_off
         
         menu = 4
         sub_menu = False
@@ -210,6 +322,11 @@ class coop_controller:
             
             self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
             
+    def cancel_error(self):
+        self.in_sub_menu = False
+        self.cur_menu = 1
+        self.error_state = False
+            
     def update_display(self):
         if self.display_is_on:    
             if type(self.display_message) == str:
@@ -222,6 +339,13 @@ class coop_controller:
                 self.lcd.message = msg
                 self.prev_display_message = msg
         
+    def override_door_raise(self):
+        self.door_state_override = True
+        self.door_raise()
+    
+    def override_door_lower(self):
+        self.door_state_override = True
+        self.door_lower()
             
     def door_stop(self):
         GPIO.output(self.pins['door_raise'], GPIO.LOW)
@@ -246,6 +370,15 @@ class coop_controller:
         self.door_is_closing = True
         self.door_move_end_time = self.cur_time+self.door_travel_time
         
+    def override_light_on(self):
+        self.light_state_override = True
+        self.light_on()
+        
+        
+    def override_light_off(self):
+        self.light_state_override = True
+        self.light_off()
+        
         
     def light_on(self):
         GPIO.output(self.pins['light'], GPIO.HIGH)
@@ -258,7 +391,7 @@ class coop_controller:
             
     def next_menu(self):
         self.in_sub_menu = False
-        self.cur_menu +=1
+        self.cur_menu = max(0,(self.cur_menu+1))
         self.cur_menu %= (max(self.button_menu.keys())+1)
         
     def prev_menu(self):
@@ -266,6 +399,21 @@ class coop_controller:
         self.cur_menu -= 1
         if self.cur_menu < 0:
             self.cur_menu = max(self.button_menu.keys())
+            
+    def disp_override(self):
+        if self.door_state_override:
+            door_state = 'T'
+        else:
+            door_state = 'F'
+            
+        if self.light_state_override:
+            light_state = 'T'
+        else:
+            light_state = 'F'
+            
+        msg = 'Override Door: {}\n        Light: {}'.format(door_state,light_state)
+        return msg
+            
             
     def disp_sensor_state(self):
         if self.door_closed_switch:
@@ -320,24 +468,55 @@ class coop_controller:
         return string,parts       
             
     def check_times(self):
-        self.daytime = (self.cur_time>self.sunrise) & (self.cur_time<self.close_time)
+        self.door_open_time = (self.cur_time>self.sunrise) & (self.cur_time<self.close_time)
+        
+        
+        
+        self.light_on_time = (self.cur_time>self.sunrise) & (self.cur_time<self.sunset)
+        
+        
+        
+        if (self.cur_time > self.send_next_message_time) and (len(self.notification_list)>0):
+            self.send_next_message_time = self.cur_time + dt.timedelta(seconds=1.5)
+            self.send_next_notification()
+        
+        
         self.display_time_exceeded = self.cur_time>self.display_off_time
         if self.cur_day != self.cur_time.day:
             self.cur_day = self.cur_time.day
             self.get_sunrise_sunset()
             
         if self.cur_time > self.door_move_end_time:
-            self.door_stop()
             string,parts = self.get_datetime_string(self.cur_time)
-            msg = 'Chicken Door Malfuntion:\n Door Didn\'t Work \n time: {}'.format(string)
-            self.send_notification(msg)
+            if self.door_is_closing:
+                msg = 'Chicken Door Malfuntion:\n  Door Didn\'t close \n  time: {}'.format(string)
+                self.error_msg = 'ERR: clse failed\nSelect ==> clear'
+            elif self.door_is_opening:
+                msg = 'Chicken Door Malfuntion:\n  Door Didn\'t open \n  time: {}'.format(string)
+                self.error_msg = 'ERR: open failed\nSelect ==> clear'
+            else:
+                msg = 'Chicken Door Malfuntion:\n  Not sure what the problem is \n  time: {}'.format(string)
+                self.error_msg = 'ERR: unk failure\nSelect ==> clear'
+              
+                
+            self.error_state = True
+            self.cur_menu = -3
+            self.in_sub_menu = False
+            
+            self.door_stop()
+            self.queue_notification(msg)
             
         
             
     def check_display_status(self):
         if self.display_is_on:
             if self.display_time_exceeded:
-                self.display_off()
+                if self.door_state_override or self.light_state_override:
+                    self.cur_menu = -2
+                    self.in_sub_menu = False
+                    self.update_display()
+                else:
+                    self.display_off()
             else:
                 self.update_display()
             
@@ -379,13 +558,15 @@ class coop_controller:
         self.door_is_opening = False
         self.door_is_closing = False
         self.door_closed_stop_time = self.cur_time+self.long_time
-        self.door_state_override = None #none, open, close
-        self.light_state_override = None #none, on, off
+        self.door_state_override = False
+        self.light_state_override = False
         self.new_day = False
         self.door_move_end_time = self.cur_time+self.long_time
         self.cur_menu = -1
         self.in_sub_menu = False
         self.door_travel_time = dt.timedelta(seconds = settings.expected_door_travel_time)
+        self.notification_list = []
+        self.send_next_message_time = self.cur_time
         
        
     def init_pins(self):
@@ -417,21 +598,41 @@ class coop_controller:
         self.close_time = self.sunset + dt.timedelta(minutes=settings.wait_after_sunset)
         
         
-    def send_notification(self,message):
+    def queue_notification(self,message):
+        for address in settings.phone_numbers:
+            self.notification_list.append((message,address))
         
-        msg= EmailMessage()
-        my_address = settings.email
-        app_generated_password = settings.password    # gmail generated password
-        msg["From"]= 'coop controller'      #sender address
         
-        msg["To"] = settings.phone_number     #reciver address
+    def send_next_notification(self):
+        message,address = self.notification_list.pop(0)
         
-        msg.set_content(message)   #message body
         
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        
+        client = Client(settings.account_sid, settings.auth_token) 
+         
+        message = client.messages.create(  
+                                      messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
+                                      body=message,      
+                                      to=address 
+                                  ) 
+         
+        print(message.sid)
+        
+        
+        
+        # msg= EmailMessage()
+        # my_address = settings.email
+        # app_generated_password = settings.password    # gmail generated password
+        # msg["From"]= 'coop controller'      #sender address
+        
+        # msg["To"] = address     #reciver address
+        
+        # msg.set_content(message)   #message body
+        
+        # with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             
-            smtp.login(my_address,app_generated_password)    #login gmail account
+        #     smtp.login(my_address,app_generated_password)    #login gmail account
             
-            print("sending mail")
-            smtp.send_message(msg)   #send message 
-            print("mail has sent")
+        #     print("sending mail")
+        #     smtp.send_message(msg)   #send message 
+        #     print("mail has sent")

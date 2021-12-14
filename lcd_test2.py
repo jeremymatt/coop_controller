@@ -25,7 +25,7 @@ lcd.message = "How're you doing\nkiddo?"
 for i in range(2,-1,-1):
     lcd.message = "How're you doing\nkiddo? Bye in {}sec".format(i)
     time.sleep(1)
-#lcd.color = [0,0,0]
+lcd.color = [0,0,0]
 lcd.clear()    
     
 """
