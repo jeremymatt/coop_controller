@@ -87,6 +87,7 @@ class coop_controller:
             
             
     def print_state(self):
+        print('\n')
         # print('\nDoor is open: {}'.format(self.door_is_open))
         print('Door is opening: {}'.format(self.door_is_opening))
         print('Door is fully open: {}'.format(self.door_is_open))
