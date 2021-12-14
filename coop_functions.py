@@ -87,12 +87,12 @@ class coop_controller:
             
             
     def print_state(self):
-        print('\nDoor is open: {}'.format(self.door_is_open))
+        # print('\nDoor is open: {}'.format(self.door_is_open))
         print('Door is opening: {}'.format(self.door_is_opening))
-        print('Door open switch triggered: {}'.format(self.door_open_switch))
-        print('Door is closed: {}'.format(self.door_is_closed))
+        print('Door is fully open: {}'.format(self.door_is_open))
+        # print('Door is closed: {}'.format(self.door_is_closed))
         print('Door is closing: {}'.format(self.door_is_closing))
-        print('Door closed switch triggered: {}'.format(self.door_closed_switch))
+        print('Door is closed: {}'.format(self.door_is_closed))
         print('Door override: {}'.format(self.door_state_override))
         print('Light is on: {}'.format(self.light_is_on))
         print('Light override: {}'.format(self.light_state_override))
@@ -148,9 +148,9 @@ class coop_controller:
             self.queue_notification(msg)
             
         
-        if self.door_closed_switch and self.door_is_closing:
-            self.door_is_open = False
-            self.door_is_closed = True
+        if self.door_is_closed and self.door_is_closing:
+            # self.door_is_open = False
+            # self.door_is_closed = True
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
@@ -160,10 +160,10 @@ class coop_controller:
             self.door_closed_stop_time = self.cur_time + self.long_time
             self.door_stop()
            
-        if self.door_open_switch and self.door_is_opening:
+        if self.door_is_open and self.door_is_opening:
             self.door_stop()
-            self.door_is_open = True
-            self.door_is_closed = False
+            # self.door_is_open = True
+            # self.door_is_closed = False
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
@@ -194,8 +194,8 @@ class coop_controller:
             
             
     def check_inputs(self):
-        self.door_closed_switch = GPIO.input(self.pins['door_closed'])==GPIO.LOW
-        self.door_open_switch = GPIO.input(self.pins['door_open'])==GPIO.LOW
+        self.door_is_closed = GPIO.input(self.pins['door_closed'])==GPIO.LOW
+        self.door_is_open = GPIO.input(self.pins['door_open'])==GPIO.LOW
         
     
     def init_button_menu(self):
@@ -609,8 +609,8 @@ class coop_controller:
         self.long_time = dt.timedelta(days=365*100)
         self.cur_day = self.cur_time.day
         self.light_is_on = None
-        self.door_is_open = False
-        self.door_is_closed = False
+        # self.door_is_open = False
+        # self.door_is_closed = False
         self.door_is_opening = False
         self.door_is_closing = False
         self.door_closed_stop_time = self.cur_time+self.long_time
