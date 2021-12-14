@@ -415,7 +415,7 @@ class coop_controller:
         self.light_off()
         
     def cancel_light_override(self):
-        self.door_state_override = False
+        self.light_state_override = False
         
     def light_on(self):
         GPIO.output(self.pins['light'], GPIO.HIGH)
