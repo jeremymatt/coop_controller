@@ -134,7 +134,7 @@ class coop_controller:
             
     def check_door(self):
         
-        if self.door_closed_switch and self.door_open_switch:
+        if self.door_is_closed and self.door_is_open:
             string,parts = self.get_datetime_string(self.cur_time)
             msg = 'Chicken Door Malfuntion:\n  Both switches closed \n  time: {}'.format(string)
             self.error_msg = 'ERR:bth swch cls\nSelect ==> clear'
@@ -470,12 +470,12 @@ class coop_controller:
             
             
     def disp_sensor_state(self):
-        if self.door_closed_switch:
+        if self.door_is_closed:
             DC = 'cl'
         else:
             DC = 'op'
             
-        if self.door_open_switch:
+        if self.door_is_open:
             DO = 'cl'
         else:
             DO = 'op'
