@@ -674,7 +674,7 @@ class coop_controller:
         #                               to=address 
         #                           ) 
         
-        print(message.sid)
+        # print(message.sid)
         
         print('Sending error message: \n{}'.format(message))
          
