@@ -70,6 +70,7 @@ class coop_controller:
         
         
     def run(self):
+        disp_state_trigger = self.cur_time
         while True:
             self.get_cur_time()
             self.check_times()
@@ -78,9 +79,26 @@ class coop_controller:
             self.check_inputs()
             self.check_door()
             
-            
+            if self.cur_time > disp_state_trigger:
+                disp_state_trigger = self.cur_time + dt.timedelta(seconds=2)
+                self.print_state()
             
             self.check_display_status()
+            
+            
+    def print_state(self):
+        print('Door is open: {}'.format(self.door_is_open))
+        print('Door is opening: {}'.format(self.door_is_opening))
+        print('Door open switch triggered: {}'.format(self.door_open_switch))
+        print('Door is closed: {}'.format(self.door_is_closed))
+        print('Door is closing: {}'.format(self.door_is_closing))
+        print('Door closed switch triggered: {}'.format(self.door_closed_switch))
+        print('Light is on: {}'.format(self.light_is_on))
+        print('IN ERROR STATE: {}'.format(self.error_state))
+        print('current menu: {}'.format(self.cur_menu))
+        print('In submenu: {}'.format(self.in_sub_menu))
+        print('Items in message send queue: {}'.format(len(self.notification_list)))
+        
             
     def check_error_state(self):
         display_state = True
@@ -94,10 +112,11 @@ class coop_controller:
             if self.cur_time>disp_blink_time:
                 if display_state:
                     self.lcd.color = [0,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.25)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
                 else:
                     self.lcd.color = [100,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.25)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=0.75)
+                    print('IN ERROR STATE')
             
             
             
@@ -238,10 +257,10 @@ class coop_controller:
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
-        self.button_menu[menu][sub_menu]['msg'] = 'Override door'
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_door_override
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
-        self.button_menu[menu][sub_menu]['left'] = None
-        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['left'] = self.cancel_door_override
+        self.button_menu[menu][sub_menu]['right'] = self.cancel_door_override
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
@@ -259,10 +278,10 @@ class coop_controller:
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
-        self.button_menu[menu][sub_menu]['msg'] = 'Override light'
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_light_override
         self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
-        self.button_menu[menu][sub_menu]['left'] = None
-        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['left'] = self.cancel_light_override
+        self.button_menu[menu][sub_menu]['right'] = self.cancel_light_override
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
@@ -346,6 +365,10 @@ class coop_controller:
     def override_door_lower(self):
         self.door_state_override = True
         self.door_lower()
+        
+    def cancel_door_override(self):
+        self.door_state_override = False
+        
             
     def door_stop(self):
         GPIO.output(self.pins['door_raise'], GPIO.LOW)
@@ -379,6 +402,8 @@ class coop_controller:
         self.light_state_override = True
         self.light_off()
         
+    def cancel_light_override(self):
+        self.door_state_override = False
         
     def light_on(self):
         GPIO.output(self.pins['light'], GPIO.HIGH)
@@ -402,6 +427,20 @@ class coop_controller:
             
     def disp_error_msg(self):
         return self.error_msg
+    
+    def disp_door_override(self):
+        if self.door_state_override:
+            msg = 'DOOR OVERRIDDEN\nL/R to cancel'
+        else:
+            msg = 'Door Override\nSel => manual'
+        return msg
+        
+    def disp_light_override(self):
+        if self.light_state_override:
+            msg = 'LIGHT OVERRIDDEN\nL/R to cancel'
+        else:
+            msg = 'Light Override\nSel => manual'
+        return msg
             
     def disp_override(self):
         if self.door_state_override:
