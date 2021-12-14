@@ -85,10 +85,10 @@ class coop_controller:
     def check_error_state(self):
         display_state = True
         
-        self.lcd.color = [100, 0, 0]
-        self.lcd.message = self.error_msg
-        disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
         while self.error_state:
+            self.lcd.color = [100, 0, 0]
+            self.lcd.message = self.error_msg
+            disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
             self.get_cur_time()
             self.check_buttons()
             if self.cur_time>disp_blink_time:
