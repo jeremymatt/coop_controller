@@ -173,7 +173,7 @@ class coop_controller:
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
-        self.button_menu[menu][sub_menu]['msg'] = self.error_msg
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_error_msg
         self.button_menu[menu][sub_menu]['select'] = self.cancel_error
         self.button_menu[menu][sub_menu]['left'] = None
         self.button_menu[menu][sub_menu]['right'] = None
@@ -399,6 +399,9 @@ class coop_controller:
         self.cur_menu -= 1
         if self.cur_menu < 0:
             self.cur_menu = max(self.button_menu.keys())
+            
+    def disp_error_msg(self):
+        return self.error_msg
             
     def disp_override(self):
         if self.door_state_override:
