@@ -173,8 +173,8 @@ class coop_controller:
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
-        self.button_menu[menu][sub_menu]['msg'] = self.cancel_error
-        self.button_menu[menu][sub_menu]['select'] = None
+        self.button_menu[menu][sub_menu]['msg'] = self.error_msg
+        self.button_menu[menu][sub_menu]['select'] = self.cancel_error
         self.button_menu[menu][sub_menu]['left'] = None
         self.button_menu[menu][sub_menu]['right'] = None
         self.button_menu[menu][sub_menu]['up'] = None
@@ -567,6 +567,7 @@ class coop_controller:
         self.door_travel_time = dt.timedelta(seconds = settings.expected_door_travel_time)
         self.notification_list = []
         self.send_next_message_time = self.cur_time
+        self.error_state = False
         
        
     def init_pins(self):
