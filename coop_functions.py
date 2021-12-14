@@ -142,23 +142,26 @@ class coop_controller:
         
         in_err_state = False
         
+        disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
+        
         while self.error_state:
             in_err_state = True
             self.lcd.color = [100, 0, 0]
             self.lcd.message = self.error_msg
-            disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
             self.get_cur_time()
             self.check_send_notification_time()
             self.check_buttons()
             if self.cur_time>disp_blink_time:
                 if display_state:
                     self.lcd.color = [0,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=5)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=.5)
                     print('display off')
+                    display_state = False
                 else:
                     self.lcd.color = [100,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=5)
+                    disp_blink_time = self.cur_time + dt.timedelta(seconds=.75)
                     print('display on')
+                    display_state = True
                     
         if in_err_state:
             self.display_on()
@@ -629,7 +632,7 @@ class coop_controller:
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
-        self.display_message = 'Starting the\nstream'
+        self.display_message = 'HI! Starting the\nstream'
         self.prev_display_message = 'none'
         
     
