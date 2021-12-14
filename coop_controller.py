@@ -20,8 +20,14 @@ s = str(dt.second).zfill(2)
 # sys.stdout = open('{}-{}-{}_{}-{}-{}_log.txt'.format(y,m,d,h,m,s), 'w')
 
 controller = CF.coop_controller()
-controller.run()
-# try:
-#     controller.run()
-# except:
-#     CF.send_crash_notification()
+# controller.run()
+try:
+    controller.run()
+except:
+    CF.send_crash_notification()
+    try:
+        controller.print_state('CONTROLLER CRASHED\n')
+    except:
+        donothing = 1
+        
+    

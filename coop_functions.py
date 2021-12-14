@@ -80,15 +80,39 @@ class coop_controller:
             self.check_door()
             
             if self.cur_time > disp_state_trigger:
-                disp_state_trigger = self.cur_time + dt.timedelta(seconds=2)
+                disp_state_trigger = self.cur_time + dt.timedelta(seconds=60)
                 self.print_state()
             
             self.check_display_status()
             
             
-    def print_state(self):
+    def print_state(self,label_msg = None):
+        with open('logfile.txt','a') as f:
+            f.write('\n')
+            if label_msg != None:
+                f.write(label_msg)
+            # print('\nDoor is open: {}'.format(self.door_is_open))
+            f.write('{}\n'.format(self.cur_time))
+            f.write('Door is opening: {}\n'.format(self.door_is_opening))
+            f.write('Door is fully open: {}\n'.format(self.door_is_open))
+            # print('Door is closed: {}'.format(self.door_is_closed))
+            f.write('Door is closing: {}\n'.format(self.door_is_closing))
+            f.write('Door is closed: {}\n'.format(self.door_is_closed))
+            f.write('Door override: {}\n'.format(self.door_state_override))
+            f.write('Light is on: {}\n'.format(self.light_is_on))
+            f.write('Light override: {}\n'.format(self.light_state_override))
+            f.write('IN ERROR STATE: {}\n'.format(self.error_state))
+            f.write('current menu: {}\n'.format(self.cur_menu))
+            f.write('In submenu: {}\n'.format(self.in_sub_menu))
+            f.write('Items in message send queue: {}\n'.format(len(self.notification_list)))
+            f.write('Menu Message: {}\n'.format(self.msg))
+        
+        
         print('\n')
         # print('\nDoor is open: {}'.format(self.door_is_open))
+        if label_msg != None:
+            print(label_msg)
+        print(self.cur_time)
         print('Door is opening: {}'.format(self.door_is_opening))
         print('Door is fully open: {}'.format(self.door_is_open))
         # print('Door is closed: {}'.format(self.door_is_closed))
