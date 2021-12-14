@@ -600,6 +600,7 @@ class coop_controller:
         self.cur_menu = -1
         self.lcd.clear()
         self.display_message = 'None'
+        self.msg = 'None'
         self.in_sub_menu = False
         self.lcd.color = [0, 0, 0]
     
@@ -623,6 +624,7 @@ class coop_controller:
         self.notification_list = []
         self.send_next_message_time = self.cur_time
         self.error_state = False
+        self.msg = 'None'
         
        
     def init_pins(self):
