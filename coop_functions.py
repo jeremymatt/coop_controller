@@ -67,6 +67,15 @@ class coop_controller:
         self.init_button_menu()
         self.init_display()
         
+        t = dt.datetime.now()
+        y = t.year
+        m = str(t.month).zfill(2)
+        d = str(t.day).zfill(2)
+        h = str(t.hour).zfill(2)
+        m = str(t.minute).zfill(2)
+        s = str(t.second).zfill(2)
+        self.logfile_name = 'LOGFILE_{}-{}-{}_{}-{}-{}.txt'.format(y,m,d,h,m,s)
+        
         
         
     def run(self):
@@ -87,7 +96,7 @@ class coop_controller:
             
             
     def print_state(self,label_msg = None):
-        with open('logfile.txt','a') as f:
+        with open(self.logfile_name,'a') as f:
             f.write('\n')
             if label_msg != None:
                 f.write(label_msg)
