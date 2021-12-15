@@ -8,26 +8,38 @@ Created on Fri Dec 10 11:34:53 2021
 import datetime as dt
 import coop_functions as CF
 import sys
+import traceback
+import os
 
-
-dt = dt.datetime.now()
-y = dt.year
-m = str(dt.month).zfill(2)
-d = str(dt.day).zfill(2)
-h = str(dt.hour).zfill(2)
-m = str(dt.minute).zfill(2)
-s = str(dt.second).zfill(2)
-# sys.stdout = open('{}-{}-{}_{}-{}-{}_log.txt'.format(y,m,d,h,m,s), 'w')
 
 controller = CF.coop_controller()
 # controller.run()
 try:
     controller.run()
 except Exception as e:
+    err_msg = str(e)
     CF.send_crash_notification()
+    
+    '''
+    y,mo,d,h,m,s = CF.get_datetime_parts()
+    cd = os.getcwd()
+    crash_report_dir = os.path.join(cd,'CRASH_REPORT')
+    if not os.path.isdir(crash_report_dir):
+        os.makedirs(crash_report_dir)
+    crash_report_fn = os.path.join(crash_report_dir,'Exec-traceback_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s))
+    with open(crash_report_fn,'w') as file:
+        traceback.print_exc(limit=None, file=file, chain=True)
+        '''
+        
+    
     try:
-        controller.print_state('CONTROLLER CRASHED WITH ERROR MESSAGE\n{}\nState:\n'.format(str(e)))
+        controller.print_state('CONTROLLER CRASHED WITH:\n  ERROR MESSAGE ==> {}\n\nState:\n'.format(err_msg))
     except:
         donothing = 1
+        
+    with open(controller.logfile_name, 'a') as file:
+        file.write('\n')
+        traceback.print_exc(limit=None, file=file, chain=True)
+        
         
     

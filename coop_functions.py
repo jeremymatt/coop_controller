@@ -37,14 +37,20 @@ def restart():
     print(output)
     """
 
-
-def send_crash_notification():
+def get_datetime_parts():
     ct = dt.datetime.now()
     y = ct.year
     mo = str(ct.month).zfill(2)
     d = str(ct.day).zfill(2)
     h = str(ct.hour).zfill(2)
     m = str(ct.minute).zfill(2)
+    s = str(ct.second).zfill(2)
+    
+    return y,mo,d,h,m,s
+    
+
+def send_crash_notification():
+    y,mo,d,h,m,s = get_datetime_parts()
     for address in settings.phone_numbers:
     
         
@@ -67,19 +73,18 @@ class coop_controller:
         self.init_button_menu()
         self.init_display()
         
-        t = dt.datetime.now()
-        y = t.year
-        m = str(t.month).zfill(2)
-        d = str(t.day).zfill(2)
-        h = str(t.hour).zfill(2)
-        m = str(t.minute).zfill(2)
-        s = str(t.second).zfill(2)
-        self.logfile_name = 'LOGFILE_{}-{}-{}_{}-{}-{}.txt'.format(y,m,d,h,m,s)
+        y,mo,d,h,m,s = get_datetime_parts()
+        self.logfile_name = 'LOGFILE_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s)
+        cd = os.getcwd()
+        log_dir = os.path.join(cd,'logs')
+        if not os.path.isdir(log_dir):
+            os.makedirs(log_dir)
+            
         
-        
+        self.logfile_name = os.path.join(log_dir,self.logfile_name)                
         
     def run(self):
-        disp_state_trigger = self.cur_time
+        self.print_state_trigger = self.cur_time
         while True:
             self.get_cur_time()
             self.check_times()
@@ -88,8 +93,8 @@ class coop_controller:
             self.check_inputs()
             self.check_door()
             
-            if self.cur_time > disp_state_trigger:
-                disp_state_trigger = self.cur_time + dt.timedelta(seconds=60)
+            if self.cur_time > self.print_state_trigger:
+                self.print_state_trigger = self.cur_time + self.long_time
                 self.print_state()
             
             self.check_display_status()
@@ -100,11 +105,9 @@ class coop_controller:
             f.write('\n')
             if label_msg != None:
                 f.write(label_msg)
-            # print('\nDoor is open: {}'.format(self.door_is_open))
             f.write('{}\n'.format(self.cur_time))
             f.write('Door is opening: {}\n'.format(self.door_is_opening))
             f.write('Door is fully open: {}\n'.format(self.door_is_open))
-            # print('Door is closed: {}'.format(self.door_is_closed))
             f.write('Door is closing: {}\n'.format(self.door_is_closing))
             f.write('Door is closed: {}\n'.format(self.door_is_closed))
             f.write('Door override: {}\n'.format(self.door_state_override))
@@ -146,6 +149,7 @@ class coop_controller:
         
         while self.error_state:
             if not in_err_state:
+                self.print_state('IN ERROR STATE\n')
                 self.lcd.color = [100, 0, 0]
                 self.lcd.message = self.error_msg
                 in_err_state = True
@@ -195,11 +199,13 @@ class coop_controller:
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))
             
         if self.cur_time>self.door_travel_stop_time:
             print('Stopped move at: {}'.format(self.cur_time))
             self.door_travel_stop_time = self.cur_time + self.long_time
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             self.door_stop()
            
         if self.door_is_open and self.door_is_opening:
@@ -210,29 +216,34 @@ class coop_controller:
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
             
             
         if self.door_open_time and not (self.door_is_open or self.door_is_opening) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken Door Opening:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_raise()
             
         if not self.door_open_time and not (self.door_is_closed or self.door_is_closing) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken Door Closing:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_lower()
             
         if self.light_on_time and not self.light_is_on and not self.light_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning on:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.light_on()
             
         if not self.light_on_time and self.light_is_on and not self.light_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning off:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.light_off()
@@ -416,14 +427,17 @@ class coop_controller:
                 self.prev_display_message = self.msg
         
     def override_door_raise(self):
+        self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
         self.door_state_override = True
         self.door_raise()
     
     def override_door_lower(self):
+        self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
         self.door_state_override = True
         self.door_lower()
         
     def cancel_door_override(self):
+        self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
         self.door_state_override = False
         
             

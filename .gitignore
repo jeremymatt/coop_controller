@@ -9,6 +9,10 @@ __pycache__/
 #specific files
 settings.py
 
+#Crash report & log folders
+CRASH_REPORT/
+logs/
+
 # Distribution / packaging
 .Python
 build/
