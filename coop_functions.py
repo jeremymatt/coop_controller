@@ -189,6 +189,7 @@ class coop_controller:
             
         
         if self.door_is_closed and self.door_is_closing:
+            print('triggered close stop at: {}'.format(self.cur_time))
             # self.door_is_open = False
             # self.door_is_closed = True
             self.door_is_closing = False
@@ -197,10 +198,12 @@ class coop_controller:
             self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))
             
         if self.cur_time>self.door_travel_stop_time:
+            print('Stopped move at: {}'.format(self.cur_time))
             self.door_travel_stop_time = self.cur_time + self.long_time
             self.door_stop()
            
         if self.door_is_open and self.door_is_opening:
+            print('triggered open stop at: {}'.format(self.cur_time))
             # self.door_stop()
             # self.door_is_open = True
             # self.door_is_closed = False
@@ -209,7 +212,6 @@ class coop_controller:
             self.door_move_end_time = self.cur_time + self.long_time
             self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
             
-        if self.cur_time>
             
         if self.door_open_time and not (self.door_is_open or self.door_is_opening) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
