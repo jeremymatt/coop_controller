@@ -176,7 +176,7 @@ class coop_controller:
         
         if self.door_is_closed and self.door_is_open:
             string,parts = self.get_datetime_string(self.cur_time)
-            msg = 'Chicken Door Malfuntion:\n  Both switches closed \n  time: {}'.format(string)
+            msg = 'Chicken Door Malfunction:\n  Both switches closed \n  time: {}'.format(string)
             self.error_msg = 'ERR:bth swch cls\nSelect ==> clear'
           
             
@@ -595,13 +595,13 @@ class coop_controller:
         if self.cur_time > self.door_move_end_time:
             string,parts = self.get_datetime_string(self.cur_time)
             if self.door_is_closing:
-                msg = 'Chicken Door Malfuntion:\n  Door Didn\'t close \n  time: {}'.format(string)
+                msg = 'Chicken Door Malfunction:\n  Door Didn\'t close \n  time: {}'.format(string)
                 self.error_msg = 'ERR: clse failed\nSelect ==> clear'
             elif self.door_is_opening:
-                msg = 'Chicken Door Malfuntion:\n  Door Didn\'t open \n  time: {}'.format(string)
+                msg = 'Chicken Door Malfunction:\n  Door Didn\'t open \n  time: {}'.format(string)
                 self.error_msg = 'ERR: open failed\nSelect ==> clear'
             else:
-                msg = 'Chicken Door Malfuntion:\n  Not sure what the problem is \n  time: {}'.format(string)
+                msg = 'Chicken Door Malfunction:\n  Not sure what the problem is \n  time: {}'.format(string)
                 self.error_msg = 'ERR: unk failure\nSelect ==> clear'
               
                 
