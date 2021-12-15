@@ -194,19 +194,22 @@ class coop_controller:
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
-            self.door_closed_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
+            self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))
             
-        if self.cur_time>self.door_closed_stop_time:
-            self.door_closed_stop_time = self.cur_time + self.long_time
+        if self.cur_time>self.door_travel_stop_time:
+            self.door_travel_stop_time = self.cur_time + self.long_time
             self.door_stop()
            
         if self.door_is_open and self.door_is_opening:
-            self.door_stop()
+            # self.door_stop()
             # self.door_is_open = True
             # self.door_is_closed = False
             self.door_is_closing = False
             self.door_is_opening = False
             self.door_move_end_time = self.cur_time + self.long_time
+            self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
+            
+        if self.cur_time>
             
         if self.door_open_time and not (self.door_is_open or self.door_is_opening) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
@@ -658,7 +661,7 @@ class coop_controller:
         # self.door_is_closed = False
         self.door_is_opening = False
         self.door_is_closing = False
-        self.door_closed_stop_time = self.cur_time+self.long_time
+        self.door_travel_stop_time = self.cur_time+self.long_time
         self.door_state_override = False
         self.light_state_override = False
         self.new_day = False
