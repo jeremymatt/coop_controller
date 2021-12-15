@@ -101,12 +101,16 @@ class coop_controller:
             
             
     def print_sun_times(self,label_msg = None):
+        
+        sunrise,parts = self.get_datetime_string(self.sunrise)
+        sunset,parts = self.get_datetime_string(self.sunset)
+        close_time,parts = self.get_datetime_string(self.close_time)
         with open(self.logfile_name,'a') as f:
             f.write('\n')
             f.write('New Day!\n')
-            f.write('    Sunrise: {}\n'.format(self.sunrise))
-            f.write('     Sunset: {}\n'.format(self.sunset))
-            f.write(' Door close: {}\n'.format(self.close_time))
+            f.write('    Sunrise: {}\n'.format(sunrise))
+            f.write('     Sunset: {}\n'.format(sunset))
+            f.write(' Door close: {}\n'.format(close_time))
             
     def print_state(self,label_msg = None):
         with open(self.logfile_name,'a') as f:
