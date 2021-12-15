@@ -66,13 +66,6 @@ def send_crash_notification():
 class coop_controller:
     
     def __init__(self):
-        self.get_cur_time()
-        self.get_sunrise_sunset()
-        self.init_pins()
-        self.init_flags()
-        self.init_button_menu()
-        self.init_display()
-        
         y,mo,d,h,m,s = get_datetime_parts()
         self.logfile_name = 'LOGFILE_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s)
         cd = os.getcwd()
@@ -81,7 +74,14 @@ class coop_controller:
             os.makedirs(log_dir)
             
         
-        self.logfile_name = os.path.join(log_dir,self.logfile_name)                
+        self.logfile_name = os.path.join(log_dir,self.logfile_name) 
+        self.get_cur_time()
+        self.get_sunrise_sunset()
+        self.init_pins()
+        self.init_flags()
+        self.init_button_menu()
+        self.init_display()
+                       
         
     def run(self):
         self.print_state_trigger = self.cur_time
@@ -99,6 +99,14 @@ class coop_controller:
             
             self.check_display_status()
             
+            
+    def print_sun_times(self,label_msg = None):
+        with open(self.logfile_name,'a') as f:
+            f.write('\n')
+            f.write('New Day!\n')
+            f.write('    Sunrise: {}\n'.format(self.sunrise))
+            f.write('     Sunset: {}\n'.format(self.sunset))
+            f.write(' Door close: {}\n'.format(self.close_time))
             
     def print_state(self,label_msg = None):
         with open(self.logfile_name,'a') as f:
@@ -718,6 +726,7 @@ class coop_controller:
         self.sunset = sun.get_sunset_time(self.cur_time)
         
         self.close_time = self.sunset + dt.timedelta(minutes=settings.wait_after_sunset)
+        self.print_sun_times()
         
         
     def queue_notification(self,message):
