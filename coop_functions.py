@@ -11,6 +11,8 @@ from suntime import Sun
 
 from twilio.rest import Client 
 
+import traceback
+
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 import board
@@ -49,18 +51,27 @@ def get_datetime_parts():
     return y,mo,d,h,m,s
     
 
-def send_crash_notification():
+def send_crash_notification(logfile_name):
     y,mo,d,h,m,s = get_datetime_parts()
+    message = '*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,mo,d,h,m)
     for address in settings.phone_numbers:
-    
         
-        client = Client(settings.account_sid, settings.auth_token) 
-         
-        message = client.messages.create(  
-                                      messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
-                                      body='*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,mo,d,h,m),      
-                                      to=address 
-                                  ) 
+        try:
+            send_message_twilio(address,message)
+        except Exception as e:
+            with open(logfile_name, 'a') as file:
+                file.write('\nFAILED TO SEND CRASH TEXT NOTIFICATION. \nADDRESS:\n{}\nMESSAGE:\n{}\n\nTRACEBACK:\n'.format(address,message))
+                traceback.print_exc(limit=None, file=file, chain=True)
+                
+        
+def send_message_twilio(address,message):
+    client = Client(settings.account_sid, settings.auth_token) 
+     
+    message = client.messages.create(  
+                                  messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
+                                  body=message,      
+                                  to=address 
+                              ) 
          
 
 class coop_controller:
@@ -69,12 +80,14 @@ class coop_controller:
         y,mo,d,h,m,s = get_datetime_parts()
         self.logfile_name = 'LOGFILE_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s)
         cd = os.getcwd()
-        log_dir = os.path.join(cd,'logs')
-        if not os.path.isdir(log_dir):
-            os.makedirs(log_dir)
+        self.log_dir = os.path.join(cd,'logs')
+        if not os.path.isdir(self.log_dir):
+            os.makedirs(self.log_dir)
+            
+        self.clear_old_logs()
             
         
-        self.logfile_name = os.path.join(log_dir,self.logfile_name) 
+        self.logfile_name = os.path.join(self.log_dir,self.logfile_name) 
         self.get_cur_time()
         self.get_sunrise_sunset()
         self.init_pins()
@@ -82,6 +95,16 @@ class coop_controller:
         self.init_button_menu()
         self.init_display()
                        
+        
+    def clear_old_logs(self):
+        files = [os.path.join(self.log_dir,file) for file in os.listdir(self.log_dir)]
+        files = [file for file in files if os.path.isfile(file)]
+        files.sort()
+        if len(files)>30:
+            files_to_delete = files[:(len(files)-30)]
+            for file in files_to_delete:
+                os.remove(file)
+        
         
     def run(self):
         self.print_state_trigger = self.cur_time
@@ -741,20 +764,12 @@ class coop_controller:
     def send_next_notification(self):
         message,address = self.notification_list.pop(0)
         
-        
-        
-        client = Client(settings.account_sid, settings.auth_token) 
-         
-        message = client.messages.create(  
-                                      messaging_service_sid='MG3cef878fb0107a7b2c4412cc890ba226', 
-                                      body=message,      
-                                      to=address 
-                                  ) 
-        
-        print(message.sid)
-        
-        print('Sending error message: \n{}'.format(message))
-         
+        try:
+            send_message_twilio(address,message)
+        except Exception as e:
+            with open(self.logfile_name, 'a') as file:
+                file.write('\nFAILED TO SEND TEXT NOTIFICATION. \nADDRESS:\n{}\nMESSAGE:\n{}\n\nTRACEBACK:\n'.format(address,message))
+                traceback.print_exc(limit=None, file=file, chain=True)
         
         
         
