@@ -18,7 +18,19 @@ try:
     controller.run()
 except Exception as e:
     err_msg = str(e)
-    CF.send_crash_notification()
+    
+    with open(controller.logfile_name, 'a') as file:
+        file.write('\nCONTROLLER CRASH TRACEBACK\n')
+        traceback.print_exc(limit=None, file=file, chain=True)
+    
+    CF.send_crash_notification(controller.logfile_name)
+    
+    # try:
+    # except Exception as e:
+    #     with open(controller.logfile_name, 'a') as file:
+    #         file.write('\nFAILED TO SEND CRASH TEXT NOTIFICATION. TRACEBACK:\n')
+    #         traceback.print_exc(limit=None, file=file, chain=True)
+        
     
     '''
     y,mo,d,h,m,s = CF.get_datetime_parts()
@@ -37,9 +49,8 @@ except Exception as e:
     except:
         donothing = 1
         
-    with open(controller.logfile_name, 'a') as file:
-        file.write('\n')
-        traceback.print_exc(limit=None, file=file, chain=True)
+    # CF.restart()
+        
         
         
     
