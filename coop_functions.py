@@ -140,7 +140,9 @@ class coop_controller:
             f.write('\n')
             if label_msg != None:
                 f.write(label_msg)
-            f.write('{}\n'.format(self.cur_time))
+                
+            string,parts = self.get_datetime_string(self.cur_time)
+            f.write('{}\n'.format(string))
             f.write('Door is opening: {}\n'.format(self.door_is_opening))
             f.write('Door is fully open: {}\n'.format(self.door_is_open))
             f.write('Door is closing: {}\n'.format(self.door_is_closing))
@@ -636,8 +638,10 @@ class coop_controller:
             
     def check_display_time(self):
         self.display_time_exceeded = self.cur_time>self.display_off_time
-        if self.cur_day != self.cur_time.day:
-            self.cur_day = self.cur_time.day
+        string,parts = self.get_datetime_string(self.cur_time)
+        month,day,hour,minute,second = parts
+        if self.cur_day != day:
+            self.cur_day = day
             self.get_sunrise_sunset()
             
     def check_door_move_time(self):
@@ -706,7 +710,9 @@ class coop_controller:
     
     def init_flags(self):
         self.long_time = dt.timedelta(days=365*100)
-        self.cur_day = self.cur_time.day
+        string,parts = self.get_datetime_string(self.cur_time)
+        month,day,hour,minute,second = parts
+        self.cur_day = day
         self.light_is_on = None
         # self.door_is_open = False
         # self.door_is_closed = False
