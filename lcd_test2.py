@@ -34,7 +34,7 @@ lcd.clear()
 with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
     file.write('Aobut to call coop controller\n')
     
-subprocess.call(['python','/home/pi/github/coop_controller/coop_controller.py'])
+#subprocess.call(['python','/home/pi/github/coop_controller/coop_controller.py'])
     
 """
 
