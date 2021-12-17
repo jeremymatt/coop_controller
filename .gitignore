@@ -8,6 +8,7 @@ __pycache__/
 
 #specific files
 settings.py
+cc2.py
 
 #Crash report & log folders
 CRASH_REPORT/
