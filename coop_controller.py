@@ -20,7 +20,7 @@ import time
 # time.sleep(120)
 
 
-with ('/home/pi/github/coop_controller/beans.txt' 'w') as file:
+with ('/home/pi/github/coop_controller/beans.txt', 'w') as file:
     file.write('Done inports\n')
     
     
