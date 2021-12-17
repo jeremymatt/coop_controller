@@ -4,6 +4,8 @@ import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 import time
 import RPi.GPIO as GPIO
 
+import subprocess
+
 outputs = [13,20,21]
 for output in outputs:
     GPIO.setup(output,GPIO.OUT)
@@ -26,7 +28,10 @@ for i in range(2,-1,-1):
     lcd.message = "How're you doing\nkiddo? Bye in {}sec".format(i)
     time.sleep(1)
 lcd.color = [0,0,0]
-lcd.clear()    
+lcd.clear()   
+
+ 
+subprocess.call(['python','/home/pi/github/coop_controller/coop_controller.py'])
     
 """
 

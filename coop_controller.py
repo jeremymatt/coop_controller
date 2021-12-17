@@ -1,3 +1,11 @@
+#!/user/bin/env python
+
+"""
+Created on Fri Dec 10 11:34:53 2021
+
+@author: jmatt
+"""
+
 import datetime as dt
 import coop_functions as CF
 import sys

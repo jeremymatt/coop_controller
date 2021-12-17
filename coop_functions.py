@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov 23 08:43:37 2021
+
+@author: jmatt
+"""
+
 import datetime as dt
 import time
 from suntime import Sun
