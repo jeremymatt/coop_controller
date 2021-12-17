@@ -6,6 +6,10 @@ Created on Fri Dec 10 11:34:53 2021
 @author: jmatt
 """
 
+
+with ('/home/pi/github/coop_controller/beans.txt' 'w') as file:
+    file.write('Start of coop controller\n')
+
 import datetime as dt
 import coop_functions as CF
 import sys
@@ -16,6 +20,10 @@ import time
 # time.sleep(120)
 
 
+with ('/home/pi/github/coop_controller/beans.txt' 'w') as file:
+    file.write('Done inports\n')
+    
+    
 controller = CF.coop_controller()
 # controller.run()
 try:
