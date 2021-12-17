@@ -5,6 +5,11 @@ Created on Tue Nov 23 08:43:37 2021
 @author: jmatt
 """
 
+
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('FUNCTIONS SCRIPT IMPORT START\n')
+
+
 import datetime as dt
 import time
 from suntime import Sun
