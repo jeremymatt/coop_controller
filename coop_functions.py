@@ -5,54 +5,21 @@ Created on Tue Nov 23 08:43:37 2021
 @author: jmatt
 """
 
-
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('FUNCTIONS SCRIPT IMPORT START\n')
-
-
-import datetime as dt
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('   Import break 0.1\n')
-    
-import time
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('   Import break 0.2\n')
-    
-
-
-
-from twilio.rest import Client 
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('   Import twilio\n')
-
-import traceback
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('   Import break 2\n')
-
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
+import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 import board
 import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
-
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('   Import break 3\n')
-
-import smtplib
-import settings
+import datetime as dt
 from email.message import EmailMessage
-
 import os
-
-
+import RPi.GPIO as GPIO
+import time
+import traceback
+from twilio.rest import Client 
+import settings
+import smtplib
 from suntime import Sun
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('   Import break 0.3\n')
 
-
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('FUNCTIONS SCRIPT IMPORT COMPLETE\n')
-
+GPIO.setmode(GPIO.BCM)
 
 def restart():
     os.system('sudo reboot')

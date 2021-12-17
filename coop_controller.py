@@ -6,44 +6,10 @@ Created on Fri Dec 10 11:34:53 2021
 @author: jmatt
 """
 
-
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('Start of coop controller\n')
-
-import datetime as dt
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('datetime imported\n')
-
 import coop_functions as CF
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('coop functions imported\n')
-    
-import sys
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('sys imported\n')
-    
 import traceback
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('traceback imported\n')
-    
-    
-import os
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('os imported\n')
-    
-import time
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('time imported\n')
-
-# time.sleep(120)
-
-
-with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
-    file.write('Done inports\n')
-    
-    
+   
 controller = CF.coop_controller()
-# controller.run()
 try:
     controller.run()
 except Exception as e:
