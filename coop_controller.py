@@ -7,7 +7,7 @@ Created on Fri Dec 10 11:34:53 2021
 """
 
 
-with ('/home/pi/github/coop_controller/beans.txt' 'w') as file:
+with open('/home/pi/github/coop_controller/beans.txt' 'w') as file:
     file.write('Start of coop controller\n')
 
 import datetime as dt
