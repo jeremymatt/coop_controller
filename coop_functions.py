@@ -31,6 +31,11 @@ from email.message import EmailMessage
 
 import os
 
+
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('FUNCTIONS SCRIPT IMPORT COMPLETE\n')
+
+
 def restart():
     os.system('sudo reboot')
     
