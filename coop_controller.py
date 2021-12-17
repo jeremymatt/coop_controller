@@ -12,7 +12,7 @@ import traceback
 import os
 import time
 
-time.sleep(120)
+# time.sleep(120)
 
 
 controller = CF.coop_controller()
