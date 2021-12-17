@@ -25,23 +25,6 @@ except Exception as e:
     
     CF.send_crash_notification(controller.logfile_name)
     
-    # try:
-    # except Exception as e:
-    #     with open(controller.logfile_name, 'a') as file:
-    #         file.write('\nFAILED TO SEND CRASH TEXT NOTIFICATION. TRACEBACK:\n')
-    #         traceback.print_exc(limit=None, file=file, chain=True)
-        
-    
-    '''
-    y,mo,d,h,m,s = CF.get_datetime_parts()
-    cd = os.getcwd()
-    crash_report_dir = os.path.join(cd,'CRASH_REPORT')
-    if not os.path.isdir(crash_report_dir):
-        os.makedirs(crash_report_dir)
-    crash_report_fn = os.path.join(crash_report_dir,'Exec-traceback_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s))
-    with open(crash_report_fn,'w') as file:
-        traceback.print_exc(limit=None, file=file, chain=True)
-        '''
         
     
     try:
@@ -49,7 +32,7 @@ except Exception as e:
     except:
         donothing = 1
         
-    # CF.restart()
+    CF.restart()
         
         
         

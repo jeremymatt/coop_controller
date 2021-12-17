@@ -40,6 +40,7 @@ def restart():
     """
 
 def get_datetime_parts():
+    #Get the year, month, day, hour, minute, and second of the current local time
     ct = dt.datetime.now()
     y = ct.year
     mo = str(ct.month).zfill(2)
@@ -52,6 +53,8 @@ def get_datetime_parts():
     
 
 def send_crash_notification(logfile_name):
+    #SEnd a text message crash notification.  If that fails, write the failure 
+    #to the logfile
     y,mo,d,h,m,s = get_datetime_parts()
     message = '*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,mo,d,h,m)
     for address in settings.phone_numbers:
@@ -65,6 +68,7 @@ def send_crash_notification(logfile_name):
                 
         
 def send_message_twilio(address,message):
+    #Send a message using the twilio text service
     client = Client(settings.account_sid, settings.auth_token) 
      
     message = client.messages.create(  
@@ -77,26 +81,38 @@ def send_message_twilio(address,message):
 class coop_controller:
     
     def __init__(self):
+        #Get the current date & time and generate a logfile name
         y,mo,d,h,m,s = get_datetime_parts()
         self.logfile_name = 'LOGFILE_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s)
+        #Get the current directory, generate the log directory path, and make
+        #the directory if it doesn't exist
         cd = os.getcwd()
         self.log_dir = os.path.join(cd,'logs')
         if not os.path.isdir(self.log_dir):
             os.makedirs(self.log_dir)
             
+        #Clear old logs
         self.clear_old_logs()
             
-        
+        #Generate the logfile name
         self.logfile_name = os.path.join(self.log_dir,self.logfile_name) 
+        #Run the function to get the current time in UTC
         self.get_cur_time()
+        #Calculate the sunrise/sunset times
         self.get_sunrise_sunset()
+        #Initialize the GPIO pins
         self.init_pins()
+        #INit the program control flags, constants, and variables.
         self.init_flags()
+        #Initialize the butten menu dictionary
         self.init_button_menu()
+        #Initialize the display
         self.init_display()
                        
         
     def clear_old_logs(self):
+        #List all the foles in the log directory, sort, and keep only the 30
+        #newest logs
         files = [os.path.join(self.log_dir,file) for file in os.listdir(self.log_dir)]
         files = [file for file in files if os.path.isfile(file)]
         files.sort()
@@ -107,13 +123,25 @@ class coop_controller:
         
         
     def run(self):
+        #The main loop
+        #Init a trigger to print the current state to the console for debugging
+        #purposes
         self.print_state_trigger = self.cur_time
         while True:
+            #Get the current times
             self.get_cur_time()
+            #Generate boolean control variables based on the current time relative
+            #to the door&light control times
             self.check_times()
+            #Check if the program is in an error state (IE the door didn't 
+            #open or close properly)
             self.check_error_state()
+            #Check if there was a button press and handle
             self.check_buttons()
+            #Check the status of the inputs (the switches testing if the door
+            #is open or closed)
             self.check_inputs()
+            #Check the door status and open/close if necessary
             self.check_door()
             
             if self.cur_time > self.print_state_trigger:
@@ -124,7 +152,7 @@ class coop_controller:
             
             
     def print_sun_times(self,label_msg = None):
-        
+        #Prints the sunrise/sunset times to the logfile
         sunrise,parts = self.get_datetime_string(self.sunrise)
         sunset,parts = self.get_datetime_string(self.sunset)
         close_time,parts = self.get_datetime_string(self.close_time)
@@ -136,6 +164,7 @@ class coop_controller:
             f.write(' Door close: {}\n'.format(close_time))
             
     def print_state(self,label_msg = None):
+        #Prints the state of control variables to the logfile and to the console
         with open(self.logfile_name,'a') as f:
             f.write('\n')
             if label_msg != None:
@@ -627,6 +656,8 @@ class coop_controller:
         
         self.check_display_time()
         
+        self.check_for_new_day()
+        
         self.check_door_move_time()
             
             
@@ -638,11 +669,16 @@ class coop_controller:
             
     def check_display_time(self):
         self.display_time_exceeded = self.cur_time>self.display_off_time
+        
+    def check_for_new_day(self):
         string,parts = self.get_datetime_string(self.cur_time)
         month,day,hour,minute,second = parts
         if self.cur_day != day:
-            self.cur_day = day
-            self.get_sunrise_sunset()
+            if settings.restart_daily:
+                restart()
+            else:
+                self.cur_day = day
+                self.get_sunrise_sunset()
             
     def check_door_move_time(self):
         if self.cur_time > self.door_move_end_time:
