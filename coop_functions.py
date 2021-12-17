@@ -11,8 +11,16 @@ with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
 
 
 import datetime as dt
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('   Import break 0.1\n')
+    
 import time
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('   Import break 0.2\n')
+    
 from suntime import Sun
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('   Import break 0.3\n')
 
 
 with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
