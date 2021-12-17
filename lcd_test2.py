@@ -30,9 +30,6 @@ for i in range(2,-1,-1):
 lcd.color = [0,0,0]
 lcd.clear()   
 
-
-with ('/home/pi/github/coop_controller/beans.txt' 'w') as file:
-    file.write('LCD_test2 about to call coop controller\n')
  
 subprocess.call(['python','/home/pi/github/coop_controller/coop_controller.py'])
     
