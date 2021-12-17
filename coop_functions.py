@@ -14,9 +14,15 @@ import datetime as dt
 import time
 from suntime import Sun
 
+
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('   Import break 1\n')
+
 from twilio.rest import Client 
 
 import traceback
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('   Import break 2\n')
 
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -24,6 +30,8 @@ import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
+    file.write('   Import break 3\n')
 
 import smtplib
 import settings
