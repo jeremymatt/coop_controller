@@ -10,6 +10,9 @@ import coop_functions as CF
 import sys
 import traceback
 import os
+import time
+
+time.sleep(120)
 
 
 controller = CF.coop_controller()
