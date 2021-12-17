@@ -31,7 +31,7 @@ lcd.color = [0,0,0]
 lcd.clear()   
 
 
-with open('/home/pi/github/coop_controller/beans.txt', 'w') as file:
+with open('/home/pi/github/coop_controller/beans.txt', 'a') as file:
     file.write('Aobut to call coop controller\n')
     
 subprocess.call(['python','/home/pi/github/coop_controller/coop_controller.py'])
