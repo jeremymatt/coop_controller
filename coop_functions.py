@@ -247,7 +247,7 @@ class coop_controller:
         
         if self.door_is_closed and self.door_is_open:
             string,parts = self.get_datetime_string(self.cur_time)
-            msg = 'Chicken Door Malfunction:\n  Both switches closed \n  time: {}'.format(string)
+            msg = 'DOOR MALFUNCTION:\n  Both switches closed \n  time: {}'.format(string)
             self.error_msg = 'ERR:bth swch cls\nSelect ==> clear'
           
             
@@ -296,7 +296,7 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken door opening:\n  time: {}'.format(string)
-            msg = 'CHiCKeN DooR OpEnIng:\n  time: {}'.format(string)
+            # msg = 'CHiCKeN DooR OpEnIng:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_raise()
             
@@ -304,7 +304,7 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken door closing:\n  time: {}'.format(string)
-            msg = 'cHicKen DOOr ClOsiNG:\n  time: {}'.format(string)
+            # msg = 'cHicKen DOOr ClOsiNG:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_lower()
             
@@ -312,7 +312,7 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning on:\n  time: {}'.format(string)
-            msg = 'ChiCKen liGhT tUrNiNG on:\n  time: {}'.format(string)
+            # msg = 'ChiCKen liGhT tUrNiNG on:\n  time: {}'.format(string)
             if settings.notify_lights:
                 self.queue_notification(msg)
             self.light_on()
@@ -321,7 +321,7 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning off:\n  time: {}'.format(string)
-            msg = 'ChIcKeN lIgHt TuRnInG oFf:\n  time: {}'.format(string)
+            # msg = 'ChIcKeN lIgHt TuRnInG oFf:\n  time: {}'.format(string)
             if settings.notify_lights:
                 self.queue_notification(msg)
             self.light_off()
@@ -696,13 +696,13 @@ class coop_controller:
         if self.cur_time > self.door_move_end_time:
             string,parts = self.get_datetime_string(self.cur_time)
             if self.door_is_closing:
-                msg = 'Chicken Door Malfunction:\n  Door Didn\'t close \n  time: {}'.format(string)
+                msg = 'DOOR MALFUNCTION:\n  Door Didn\'t close \n  time: {}'.format(string)
                 self.error_msg = 'ERR: clse failed\nSelect ==> clear'
             elif self.door_is_opening:
-                msg = 'Chicken Door Malfunction:\n  Door Didn\'t open \n  time: {}'.format(string)
+                msg = 'DOOR MALFUNCTION:\n  Door Didn\'t open \n  time: {}'.format(string)
                 self.error_msg = 'ERR: open failed\nSelect ==> clear'
             else:
-                msg = 'Chicken Door Malfunction:\n  Not sure what the problem is \n  time: {}'.format(string)
+                msg = 'DOOR MALFUNCTION:\n  Not sure what the problem is \n  time: {}'.format(string)
                 self.error_msg = 'ERR: unk failure\nSelect ==> clear'
               
                 
