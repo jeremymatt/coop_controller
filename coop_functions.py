@@ -832,8 +832,17 @@ class coop_controller:
         
         
     def queue_notification(self,message):
-        for address in settings.phone_numbers:
+        
+        for name in settings.phone_numbers.keys():
+            address = settings.phone_numbers[name]
+            
+            if (name == 'Jeremy') & (random.uniform(0,1)>.5):
+                message = random_case(message)
+                
             self.notification_list.append((message,address))
+            
+        # for address in settings.phone_numbers:
+        #     self.notification_list.append((message,address))
         
         
     def send_next_notification(self):
