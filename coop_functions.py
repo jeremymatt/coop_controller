@@ -299,14 +299,16 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning on:\n  time: {}'.format(string)
-            self.queue_notification(msg)
+            if settings.notify_lights:
+                self.queue_notification(msg)
             self.light_on()
             
         if not self.light_on_time and self.light_is_on and not self.light_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning off:\n  time: {}'.format(string)
-            self.queue_notification(msg)
+            if settings.notify_lights:
+                self.queue_notification(msg)
             self.light_off()
             
             
