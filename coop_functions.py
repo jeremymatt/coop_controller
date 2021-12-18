@@ -113,7 +113,7 @@ class coop_controller:
             f.write('\n')
             
             for name in settings.phone_numbers.keys():
-                f.write('name: {}, number: {}'.format(name,settings.phone_numbers[name]))
+                f.write('name: {}, number: {}\n'.format(name,settings.phone_numbers[name]))
         
         #Run the function to get the current time in UTC
         self.get_cur_time()
