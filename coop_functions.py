@@ -18,8 +18,19 @@ from twilio.rest import Client
 import settings
 import smtplib
 from suntime import Sun
+import random
 
 GPIO.setmode(GPIO.BCM)
+
+
+def random_case(string):
+    ul_dict = {}
+    ul_dict[0] = string.lower()
+    ul_dict[1] = string.upper()
+    
+    chars = [ul_dict[int(round(random.uniform(0,1)))][i] for i,char in enumerate(string)]
+    
+    return ''.join(chars)
 
 def restart():
     os.system('sudo reboot')
@@ -52,7 +63,13 @@ def send_crash_notification(logfile_name):
     #to the logfile
     y,mo,d,h,m,s = get_datetime_parts()
     message = '*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,mo,d,h,m)
-    for address in settings.phone_numbers:
+    for name in settings.phone_numbers.keys():
+        address = settings.phone_numbers[name]
+        
+        if (name == 'Jeremy') & (random.uniform(0,1)>.5):
+            message = random_case(message)
+            
+        # message = 'Hey {},\n{}'.format(name,message)
         
         try:
             send_message_twilio(address,message)
