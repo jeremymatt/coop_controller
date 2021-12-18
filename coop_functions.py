@@ -295,14 +295,16 @@ class coop_controller:
         if self.door_open_time and not (self.door_is_open or self.door_is_opening) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
-            msg = 'Chicken Door Opening:\n  time: {}'.format(string)
+            msg = 'Chicken door opening:\n  time: {}'.format(string)
+            msg = 'CHiCKeN DooR OpEnIng:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_raise()
             
         if not self.door_open_time and not (self.door_is_closed or self.door_is_closing) and not self.door_state_override:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
-            msg = 'Chicken Door Closing:\n  time: {}'.format(string)
+            msg = 'Chicken door closing:\n  time: {}'.format(string)
+            msg = 'cHicKen DOOr ClOsiNG:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_lower()
             
@@ -310,6 +312,7 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning on:\n  time: {}'.format(string)
+            msg = 'ChiCKen liGhT tUrNiNG on:\n  time: {}'.format(string)
             if settings.notify_lights:
                 self.queue_notification(msg)
             self.light_on()
@@ -318,6 +321,7 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning off:\n  time: {}'.format(string)
+            msg = 'ChIcKeN lIgHt TuRnInG oFf:\n  time: {}'.format(string)
             if settings.notify_lights:
                 self.queue_notification(msg)
             self.light_off()
