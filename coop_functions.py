@@ -65,10 +65,7 @@ def send_crash_notification(logfile_name):
     message = '*** ERROR ***\n    COOP CONTROLLER HAS CRASHED\n    {}-{}-{} {}:{}'.format(y,mo,d,h,m)
     for name in settings.phone_numbers.keys():
         address = settings.phone_numbers[name]
-        
-        if (name == 'Jeremy') & (random.uniform(0,1)>.5):
-            message = random_case(message)
-            
+                    
         # message = 'Hey {},\n{}'.format(name,message)
         
         try:
@@ -836,7 +833,7 @@ class coop_controller:
         for name in settings.phone_numbers.keys():
             address = settings.phone_numbers[name]
             
-            if (name == 'Jeremy') & (random.uniform(0,1)>.5):
+            if (name == 'none') & (random.uniform(0,1)>.95):
                 message = random_case(message)
                 
             self.notification_list.append((message,address))
