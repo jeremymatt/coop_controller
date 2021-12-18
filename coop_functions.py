@@ -91,6 +91,12 @@ class coop_controller:
             
         #Generate the logfile name
         self.logfile_name = os.path.join(self.log_dir,self.logfile_name) 
+        
+        
+        with open(self.logfile_name,'w') as f:
+            f.write('\n')
+            f.write('Welcome to the Jungle!!!\n')
+        
         #Run the function to get the current time in UTC
         self.get_cur_time()
         #Calculate the sunrise/sunset times
