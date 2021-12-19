@@ -277,18 +277,39 @@ class coop_controller:
             self.queue_notification(msg)
             
         
-        if self.door_is_closed and self.door_is_closing:
+        if self.door_is_closed and self.door_is_closing and not self.door_closing_complete:
             print('triggered close stop at: {}'.format(self.cur_time))
             self.door_is_closing = False
             self.door_is_opening = False
+            self.door_closing_complete = True
             self.door_move_end_time = self.cur_time + self.long_time
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))
             with open(self.logfile_name,'a') as f:
                 f.write('\n')
                 f.write('Stop closing:\n')
-                f.write('     Triggered at: {}'.format(self.get_datetime_string(self.cur_time)[0]))
-                f.write('   Stop moving at: {}'.format(self.get_datetime_string(self.door_travel_stop_time)[0]))
+                f.write('                Triggered at: {}'.format(self.get_datetime_string(self.cur_time)[0]))
+                f.write('  settings.extra_door_travel: {}'.format(settings.extra_door_travel))
+                f.write('   settings.door_lock_travel: {}'.format(settings.door_lock_travel))
+                f.write(' timedelta (both adtl times): {}'.format(dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))))
+                f.write('              Stop moving at: {}'.format(self.get_datetime_string(self.door_travel_stop_time)[0]))
+            
+        if self.door_is_open and self.door_is_opening and not self.door_opening_complete:
+            print('triggered open stop at: {}'.format(self.cur_time))
+            self.door_is_closing = False
+            self.door_is_opening = False
+            self.door_opening_complete = True
+            self.door_move_end_time = self.cur_time + self.long_time
+            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
+            self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
+            with open(self.logfile_name,'a') as f:
+                f.write('\n')
+                f.write('Stop opening:\n')
+                f.write('                       Triggered at: {}'.format(self.get_datetime_string(self.cur_time)[0]))
+                f.write('         settings.extra_door_travel: {}'.format(settings.extra_door_travel))
+                f.write('          settings.door_lock_travel: {}'.format(settings.door_lock_travel))
+                f.write(' timedelta (extra door travel only): {}'.format(dt.timedelta(seconds=(settings.extra_door_travel))))
+                f.write('                     Stop moving at: {}'.format(self.get_datetime_string(self.door_travel_stop_time)[0]))
             
         if self.cur_time>self.door_travel_stop_time:
             print('Stopped move at: {}'.format(self.cur_time))
@@ -296,21 +317,14 @@ class coop_controller:
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             self.door_stop()
            
-        if self.door_is_open and self.door_is_opening:
-            print('triggered open stop at: {}'.format(self.cur_time))
-            self.door_is_closing = False
-            self.door_is_opening = False
-            self.door_move_end_time = self.cur_time + self.long_time
-            self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
-            self.door_travel_stop_time = self.cur_time + dt.timedelta(seconds=settings.extra_door_travel)
-            with open(self.logfile_name,'a') as f:
-                f.write('\n')
-                f.write('Stop opening:\n')
-                f.write('     Triggered at: {}'.format(self.get_datetime_string(self.cur_time)[0]))
-                f.write('   Stop moving at: {}'.format(self.get_datetime_string(self.door_travel_stop_time)[0]))
-            
-            
-        if self.door_open_time and not (self.door_is_open or self.door_is_opening) and not self.door_state_override:
+        open_flags = [
+            self.door_is_open,
+            self.door_is_opening,
+            self.door_opening_complete,
+            self.door_state_override]
+        
+        # if self.door_open_time and not (self.door_is_open or self.door_is_opening or self.door_opening_complete) and not self.door_state_override:
+        if self.door_open_time and not any(open_flags):
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken door opening:\n  time: {}'.format(string)
@@ -318,7 +332,14 @@ class coop_controller:
             self.queue_notification(msg)
             self.door_raise()
             
-        if not self.door_open_time and not (self.door_is_closed or self.door_is_closing) and not self.door_state_override:
+        close_flags = [
+            self.door_is_closed,
+            self.door_is_closing,
+            self.door_closing_complete,
+            self.door_state_override]
+        
+        # if not self.door_open_time and not (self.door_is_closed or self.door_is_closing or self.door_closing_complete) and not self.door_state_override:
+        if not self.door_open_time and not any(close_flags):
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken door closing:\n  time: {}'.format(string)
@@ -385,18 +406,8 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
-        menu = 0
-        sub_menu = False
-        self.button_menu[menu] = {}
-        self.button_menu[menu][sub_menu] = {}
-        self.button_menu[menu][sub_menu]['msg'] = self.disp_current_time
-        self.button_menu[menu][sub_menu]['select'] = None
-        self.button_menu[menu][sub_menu]['left'] = None
-        self.button_menu[menu][sub_menu]['right'] = None
-        self.button_menu[menu][sub_menu]['up'] = self.next_menu
-        self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
-        menu = 1
+        menu = 0
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
@@ -407,7 +418,6 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
-        menu = 1
         sub_menu = True
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = self.disp_light_times
@@ -417,7 +427,7 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
-        menu = 2
+        menu = 1
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
@@ -428,7 +438,6 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
-        menu = 2
         sub_menu = True
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override door\nUD:op/cls,LR:stp'
@@ -438,7 +447,7 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['up'] = self.override_door_raise
         self.button_menu[menu][sub_menu]['down'] = self.override_door_lower
         
-        menu = 3
+        menu = 2
         sub_menu = False
         self.button_menu[menu] = {}
         self.button_menu[menu][sub_menu] = {}
@@ -449,7 +458,6 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
-        menu = 3
         sub_menu = True
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = 'Override light\nUD:on/off'
@@ -458,6 +466,17 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['right'] = None
         self.button_menu[menu][sub_menu]['up'] = self.override_light_on
         self.button_menu[menu][sub_menu]['down'] = self.override_light_off
+        
+        menu = 3
+        sub_menu = False
+        self.button_menu[menu] = {}
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_current_time
+        self.button_menu[menu][sub_menu]['select'] = None
+        self.button_menu[menu][sub_menu]['left'] = None
+        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['up'] = self.next_menu
+        self.button_menu[menu][sub_menu]['down'] = self.prev_menu
         
         menu = 4
         sub_menu = False
@@ -550,6 +569,8 @@ class coop_controller:
         GPIO.output(self.pins['door_raise'], GPIO.HIGH)
         self.door_is_opening = True
         self.door_is_closing = False
+        self.door_closing_complete = False
+        self.door_opening_complete = False
         self.door_move_end_time = self.cur_time+self.door_travel_time
         
     def door_lower(self):
@@ -558,6 +579,8 @@ class coop_controller:
         GPIO.output(self.pins['door_lower'], GPIO.HIGH)
         self.door_is_opening = False
         self.door_is_closing = True
+        self.door_closing_complete = False
+        self.door_opening_complete = False
         self.door_move_end_time = self.cur_time+self.door_travel_time
         
     def override_light_on(self):
@@ -780,8 +803,8 @@ class coop_controller:
         month,day,hour,minute,second = parts
         self.cur_day = day
         self.light_is_on = None
-        # self.door_is_open = False
-        # self.door_is_closed = False
+        self.door_closing_complete = False
+        self.door_opening_complete = False
         self.door_is_opening = False
         self.door_is_closing = False
         self.door_travel_stop_time = self.cur_time+self.long_time
