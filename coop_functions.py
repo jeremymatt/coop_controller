@@ -288,11 +288,13 @@ class coop_controller:
             with open(self.logfile_name,'a') as f:
                 f.write('\n')
                 f.write('Stop closing:\n')
-                f.write('                Triggered at: {}'.format(self.get_datetime_string(self.cur_time)[0]))
-                f.write('  settings.extra_door_travel: {}'.format(settings.extra_door_travel))
-                f.write('   settings.door_lock_travel: {}'.format(settings.door_lock_travel))
-                f.write(' timedelta (both adtl times): {}'.format(dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))))
-                f.write('              Stop moving at: {}'.format(self.get_datetime_string(self.door_travel_stop_time)[0]))
+                time = self.cur_time.replace(tzinfo=dt.timezone.utc).astimezone(tz=None)
+                f.write('                Triggered at: {}\n'.format(time))
+                time = self.door_travel_stop_time.replace(tzinfo=dt.timezone.utc).astimezone(tz=None)
+                f.write('              Stop moving at: {}\n'.format(time))
+                f.write('  settings.extra_door_travel: {}\n'.format(settings.extra_door_travel))
+                f.write('   settings.door_lock_travel: {}\n'.format(settings.door_lock_travel))
+                f.write(' timedelta (both adtl times): {}\n'.format(dt.timedelta(seconds=(settings.extra_door_travel+settings.door_lock_travel))))
             
         if self.door_is_open and self.door_is_opening and not self.door_opening_complete:
             print('triggered open stop at: {}'.format(self.cur_time))
@@ -305,11 +307,13 @@ class coop_controller:
             with open(self.logfile_name,'a') as f:
                 f.write('\n')
                 f.write('Stop opening:\n')
-                f.write('                       Triggered at: {}'.format(self.get_datetime_string(self.cur_time)[0]))
-                f.write('         settings.extra_door_travel: {}'.format(settings.extra_door_travel))
-                f.write('          settings.door_lock_travel: {}'.format(settings.door_lock_travel))
+                time = self.cur_time.replace(tzinfo=dt.timezone.utc).astimezone(tz=None)
+                f.write('                Triggered at: {}\n'.format(time))
+                time = self.door_travel_stop_time.replace(tzinfo=dt.timezone.utc).astimezone(tz=None)
+                f.write('              Stop moving at: {}\n'.format(time))
+                f.write('  settings.extra_door_travel: {}\n'.format(settings.extra_door_travel))
+                f.write('   settings.door_lock_travel: {}\n'.format(settings.door_lock_travel))
                 f.write(' timedelta (extra door travel only): {}'.format(dt.timedelta(seconds=(settings.extra_door_travel))))
-                f.write('                     Stop moving at: {}'.format(self.get_datetime_string(self.door_travel_stop_time)[0]))
             
         if self.cur_time>self.door_travel_stop_time:
             print('Stopped move at: {}'.format(self.cur_time))
