@@ -57,7 +57,7 @@ def get_datetime_parts():
     s = str(ct.second).zfill(2)
     
     return y,mo,d,h,m,s
-    
+
 
 def send_crash_notification(logfile_name):
     #SEnd a text message crash notification.  If that fails, write the failure 
@@ -878,6 +878,14 @@ class coop_controller:
         sun = Sun(settings.latitude, settings.longitude)
         self.sunrise = sun.get_sunrise_time(self.cur_time)
         self.sunset = sun.get_sunset_time(self.cur_time)
+        
+        #Sunset must be after sunrise, increment day until this is true
+        #Handles case where sunset is the following day UTC.
+        with open(self.logfile_name,'w') as f:
+            f.write('\n')
+            while self.sunset<self.sunrise:
+                f.write('Sunset is the following day UTC, increment day to next day \n')
+                self.sunset = self.sunset + dt.timedelta(days=1)
         
         self.close_time = self.sunset + dt.timedelta(minutes=settings.wait_after_sunset)
         self.print_sun_times()
