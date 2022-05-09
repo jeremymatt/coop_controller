@@ -8,10 +8,11 @@ Created on Tue Nov 23 08:43:37 2021
 import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 import board
 import busio
+import RPi.GPIO as GPIO
+
 import datetime as dt
 from email.message import EmailMessage
 import os
-import RPi.GPIO as GPIO
 import time
 import traceback
 from twilio.rest import Client 
@@ -716,6 +717,22 @@ class coop_controller:
         self.check_for_new_day()
         
         self.check_door_move_time()
+        
+        if settings.VERBOSE:
+            string,parts = self.get_datetime_string(self.cur_time)
+            with open(self.logfile_name,'a') as f:
+                f.write(string)
+                string,parts = self.get_datetime_string(self.sunrise)
+                f.write('    sunrise: {}'.format(string))
+                string,parts = self.get_datetime_string(self.sunset)
+                f.write('    sunset: {}'.format(string))
+                string,parts = self.get_datetime_string(self.close_time)
+                f.write('    close_time: {}'.format(string))
+                f.write('    Door should be open: {}'.format(self.door_open_time))
+                f.write('    Light should be on: {}'.format(self.light_on_time))
+                f.write('        After sunrise: {}'.format(self.cur_time>self.sunrise))
+                f.write('        Before sunset: {}'.format(self.cur_time<self.sunset))
+                f.write('        Before door close time: {}'.format(self.cur_time<self.close_time))
             
             
             
@@ -860,7 +877,10 @@ class coop_controller:
         for name in settings.phone_numbers.keys():
             address = settings.phone_numbers[name]
             
-            if (name == 'none') & (random.uniform(0,1)>.95):
+            # if (name == 'Monica') & (random.uniform(0,1)>.85):
+            #     message = random_case(message)
+            
+            if (name == 'Jeremy') & (random.uniform(0,1)>.85):
                 message = random_case(message)
                 
             self.notification_list.append((message,address))
