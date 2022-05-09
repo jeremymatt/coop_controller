@@ -146,7 +146,7 @@ class coop_controller:
         #The main loop
         #Init a trigger to print the current state to the console for debugging
         #purposes
-        self.print_state_trigger = self.cur_time
+        self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
         while True:
             #Get the current times
             self.get_cur_time()
@@ -165,7 +165,12 @@ class coop_controller:
             self.check_door()
             
             if self.cur_time > self.print_state_trigger:
-                self.print_state_trigger = self.cur_time + self.long_time
+                if settings.VERBOSE:
+                    #Print every iteration
+                    self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
+                else:
+                    #Print only on event
+                    self.print_state_trigger = self.cur_time + self.long_time
                 self.print_state()
             
             self.check_display_status()
@@ -721,6 +726,7 @@ class coop_controller:
         if settings.VERBOSE:
             string,parts = self.get_datetime_string(self.cur_time)
             with open(self.logfile_name,'a') as f:
+                f.write('\n\n******************')
                 f.write(string)
                 string,parts = self.get_datetime_string(self.sunrise)
                 f.write('    sunrise: {}'.format(string))
@@ -733,6 +739,7 @@ class coop_controller:
                 f.write('        After sunrise: {}'.format(self.cur_time>self.sunrise))
                 f.write('        Before sunset: {}'.format(self.cur_time<self.sunset))
                 f.write('        Before door close time: {}'.format(self.cur_time<self.close_time))
+                f.write('******************\n\n')
             
             
             
