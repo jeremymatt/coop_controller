@@ -167,7 +167,7 @@ class coop_controller:
             if self.cur_time > self.print_state_trigger:
                 if settings.VERBOSE:
                     #Print every iteration
-                    self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
+                    self.print_state_trigger = self.cur_time + dt.timedelta(seconds=30)
                 else:
                     #Print only on event
                     self.print_state_trigger = self.cur_time + self.long_time
@@ -194,6 +194,26 @@ class coop_controller:
             f.write('\n')
             if label_msg != None:
                 f.write(label_msg)
+        
+            string,parts = self.get_datetime_string(self.cur_time)
+            f.write('\n\n******************')
+            f.write(string)
+            f.write('\n')
+            f.write('        raw current time: {}\n'.format(self.cur_time))
+            string,parts = self.get_datetime_string(self.sunrise)
+            f.write('    sunrise: {}\n'.format(string))
+            f.write('        raw: {}\n'.format(self.sunrise))
+            string,parts = self.get_datetime_string(self.sunset)
+            f.write('    sunset: {}\n'.format(string))
+            f.write('        raw: {}\n'.format(self.sunset))
+            string,parts = self.get_datetime_string(self.close_time)
+            f.write('    close_time: {}\n'.format(string))
+            f.write('    Door should be open: {}\n'.format(self.door_open_time))
+            f.write('    Light should be on: {}\n'.format(self.light_on_time))
+            f.write('        After sunrise: {}\n'.format(self.cur_time>self.sunrise))
+            f.write('        Before sunset: {}\n'.format(self.cur_time<self.sunset))
+            f.write('        Before door close time: {}\n'.format(self.cur_time<self.close_time))
+            f.write('******************\n\n')
                 
             string,parts = self.get_datetime_string(self.cur_time)
             f.write('{}\n'.format(string))
@@ -209,6 +229,8 @@ class coop_controller:
             f.write('In submenu: {}\n'.format(self.in_sub_menu))
             f.write('Items in message send queue: {}\n'.format(len(self.notification_list)))
             f.write('Menu Message: {}\n'.format(self.msg))
+            
+            
         
         
         print('\n')
@@ -498,6 +520,26 @@ class coop_controller:
         self.button_menu[menu][sub_menu]['right'] = None
         self.button_menu[menu][sub_menu]['up'] = self.next_menu
         self.button_menu[menu][sub_menu]['down'] = self.prev_menu
+        
+        menu = 5
+        sub_menu = False
+        self.button_menu[menu] = {}
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = self.disp_light_override_timer
+        self.button_menu[menu][sub_menu]['select'] = self.enter_submenu
+        self.button_menu[menu][sub_menu]['left'] = self.cancel_light_override
+        self.button_menu[menu][sub_menu]['right'] = self.cancel_light_override
+        self.button_menu[menu][sub_menu]['up'] = self.next_menu
+        self.button_menu[menu][sub_menu]['down'] = self.prev_menu
+        
+        sub_menu = True
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = 'Light timer\nUD:on/off'
+        self.button_menu[menu][sub_menu]['select'] = self.exit_submenu
+        self.button_menu[menu][sub_menu]['left'] = None
+        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['up'] = self.override_light_on_timer
+        self.button_menu[menu][sub_menu]['down'] = self.override_light_off_timer
             
     def check_buttons(self):
         
@@ -602,8 +644,22 @@ class coop_controller:
         self.light_state_override = True
         self.light_off()
         
+        
+    def override_light_on_timer(self):
+        self.light_state_override_timer = True
+        self.clear_light_override = self.cur_time+dt.timedelta(minutes = 5)
+        self.light_on()
+        
+        
+    def override_light_off_timer(self):
+        self.light_state_override_timer = True
+        self.clear_light_override = self.cur_time+dt.timedelta(minutes = 5)
+        self.light_off()
+        
     def cancel_light_override(self):
         self.light_state_override = False
+        self.light_state_override_timer = False
+        self.clear_light_override = self.cur_time+self.long_time
         
     def light_on(self):
         GPIO.output(self.pins['light'], GPIO.HIGH)
@@ -641,6 +697,16 @@ class coop_controller:
         else:
             msg = 'Light Override\nSel => manual'
         return msg
+        
+    def disp_light_override_timer(self):
+        if self.light_state_override_timer:
+            diff = self.clear_light_override - self.cur_time
+            mins = str(int(diff.total_seconds() // 60)).zfill(2)
+            secs = str(int(round(diff.total_seconds() % 60,0))).zfill(2)
+            msg = 'LIGHT OFF-{}:{}\nL/R to cancel'.format(mins,secs)
+        else:
+            msg = 'Light Timer\nSel => manual'
+        return msg
             
     def disp_override(self):
         if self.door_state_override:
@@ -648,7 +714,7 @@ class coop_controller:
         else:
             door_state = 'F'
             
-        if self.light_state_override:
+        if self.light_state_override or self.light_state_override_timer:
             light_state = 'T'
         else:
             light_state = 'F'
@@ -723,27 +789,8 @@ class coop_controller:
         
         self.check_door_move_time()
         
-        if settings.VERBOSE:
-            string,parts = self.get_datetime_string(self.cur_time)
-            with open(self.logfile_name,'a') as f:
-                f.write('\n\n******************')
-                f.write(string)
-                f.write('\n')
-                f.write('        raw: {}\n'.format(self.cur_time))
-                string,parts = self.get_datetime_string(self.sunrise)
-                f.write('    sunrise: {}\n'.format(string))
-                f.write('        raw: {}\n'.format(self.sunrise))
-                string,parts = self.get_datetime_string(self.sunset)
-                f.write('        raw: {}\n'.format(self.sunset))
-                f.write('    sunset: {}\n'.format(string))
-                string,parts = self.get_datetime_string(self.close_time)
-                f.write('    close_time: {}\n'.format(string))
-                f.write('    Door should be open: {}\n'.format(self.door_open_time))
-                f.write('    Light should be on: {}\n'.format(self.light_on_time))
-                f.write('        After sunrise: {}\n'.format(self.cur_time>self.sunrise))
-                f.write('        Before sunset: {}\n'.format(self.cur_time<self.sunset))
-                f.write('        Before door close time: {}\n'.format(self.cur_time<self.close_time))
-                f.write('******************\n\n')
+        if self.cur_time>self.clear_light_override:
+            self.cancel_light_override()
             
             
             
@@ -795,6 +842,11 @@ class coop_controller:
                     self.display_message = self.disp_override()
                     self.in_sub_menu = False
                     self.update_display()
+                elif self.light_state_override_timer:
+                    self.cur_menu = -2
+                    self.display_message = self.disp_light_override_timer()
+                    self.in_sub_menu = False
+                    self.update_display()
                 else:
                     self.display_off()
             else:
@@ -840,8 +892,10 @@ class coop_controller:
         self.door_is_opening = False
         self.door_is_closing = False
         self.door_travel_stop_time = self.cur_time+self.long_time
+        self.clear_light_override = self.cur_time+self.long_time
         self.door_state_override = False
         self.light_state_override = False
+        self.light_state_override_timer = False
         self.new_day = False
         self.door_move_end_time = self.cur_time+self.long_time
         self.cur_menu = -1
