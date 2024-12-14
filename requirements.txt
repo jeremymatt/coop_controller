@@ -1,3 +1,5 @@
 twilio
 flask
 adafruit-blinka
+suntime
+adafruit-circuitpython-charlcd
