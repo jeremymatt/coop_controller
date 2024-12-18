@@ -24,6 +24,8 @@ def index():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        print('{}'.format(hashlib.md5(username.encode()).hexdigest()))
+        print('{}'.format(hashlib.md5(password.encode()).hexdigest()))
 
         if (hashlib.md5(username.encode()).hexdigest() == USERNAME_HASH and
                 hashlib.md5(password.encode()).hexdigest() == PASSWORD_HASH):
