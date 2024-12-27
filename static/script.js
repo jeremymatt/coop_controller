@@ -1,4 +1,5 @@
 function sendCommand(command) {
+    console.log(`Command sent: ${command}`);
     fetch("/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
