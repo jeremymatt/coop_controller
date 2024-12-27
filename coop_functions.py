@@ -29,7 +29,6 @@ response_queue = Queue()
 def run_coop_controller(command_queue, response_queue):
     controller = coop_controller()
     while True:
-        # Simulate running the controller
         controller.update()
         # Check for commands from the main process
         if not command_queue.empty():
@@ -310,14 +309,14 @@ class coop_controller:
                 self.lcd.message = self.error_msg
             self.get_cur_time()
             self.check_send_notification_time()
-            if self.cur_time>disp_blink_time:
+            if self.cur_time>self.disp_blink_time:
                 if self.display_state:
                     self.lcd.color = [0,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=.5)
+                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=.5)
                     self.display_state = False
                 else:
                     self.lcd.color = [100,0,0]
-                    disp_blink_time = self.cur_time + dt.timedelta(seconds=.75)
+                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=.75)
                     self.display_state = True
 
         else:
@@ -372,6 +371,11 @@ class coop_controller:
 
         if self.door_state_override:
             state['door_auto_state'] = "Overriden"
+
+        if self.light_is_on:
+            state['light_current_state'] = 'On'
+        else:
+            state['light_current_state'] = 'Off'
 
         if self.light_state_override:
             state['light_auto_state'] = 'Overridden'
