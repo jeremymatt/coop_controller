@@ -100,6 +100,7 @@ def get_datetime_parts():
 def get_time_delta_string(earlier_time,later_time):
     delta = later_time - earlier_time
     delta = delta.days*3600*24+delta.seconds
+    print('{}-{}={}'.format(later_time,earlier_time,delta))
     prefix = ""
     if delta<0:
         delta *= -1
