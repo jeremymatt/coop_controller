@@ -26,6 +26,43 @@ GPIO.setmode(GPIO.BCM)
 command_queue = Queue()
 response_queue = Queue()
 
+# def run_coop_controller(command_queue, response_queue):
+#     controller = coop_controller()
+#     while True:
+#         controller.update()
+#         # Check for commands from the main process
+#         if not command_queue.empty():
+#             command = command_queue.get()
+#             allowable_commands = [
+#                 'update',
+#                 'raise_door',
+#                 'lower_door',
+#                 'stop_door',
+#                 'cancel_override_door',
+#                 'light_on',
+#                 'light_off',
+#                 'cancel_override_light',
+#                 'clear_errors'
+#             ]
+#             if command in allowable_commands:
+#                 if command == "raise_door":
+#                     controller.override_door_raise()
+#                 elif command == "lower_door":
+#                     controller.override_door_lower()
+#                 elif command == "stop_door":
+#                     controller.door_stop()
+#                 elif command == "cancel_override_door":
+#                     controller.cancel_door_override()
+#                 elif command == "light_on":
+#                     controller.override_light_on()
+#                 elif command == "light_off":
+#                     controller.override_light_off()
+#                 elif command == "cancel_override_light":
+#                     controller.cancel_light_override()
+#                 elif command == "clear_errors":
+#                     controller.cancel_error()
+#                 response_queue.put(controller.return_current_state())
+        
 def run_coop_controller(command_queue, response_queue):
     controller = coop_controller()
     while True:
@@ -62,8 +99,6 @@ def run_coop_controller(command_queue, response_queue):
                 elif command == "clear_errors":
                     controller.cancel_error()
                 response_queue.put(controller.return_current_state())
-        
-
 
 def random_case(string):
     ul_dict = {}
@@ -134,6 +169,8 @@ logfile_name = 'LOGFILE_{}-{}-{}_{}:{}:{}.txt'.format(y,mo,d,h,m,s)
 class coop_controller:
     
     def __init__(self,logfile_name=logfile_name):
+
+        print('\nRUNNING COOP CONTROLLER\n')
         #Get the current date & time and generate a logfile name
         y,mo,d,h,m,s = get_datetime_parts()
         self.logfile_name = logfile_name
@@ -1014,6 +1051,7 @@ class coop_controller:
         self.in_error_state = False
         self.disp_blink_time = None
         self.msg = 'None'
+        self.command_queue = []
         
        
     def init_pins(self):
