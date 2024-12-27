@@ -1,12 +1,18 @@
 function sendCommand(command) {
-    console.log(`Command sent: ${command}`);
+    console.log(`Sending command: ${command}`);
     fetch("https://chickencoop.fun/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ command }),
     })
-    .then(response => response.json())
-    .then(data => updatePage(data))
+    .then(response => {
+        console.log(`Response status: ${response.status}`);
+        return response.json();
+    })
+    .then(data => {
+        console.log("Response data:", data);
+        updatePage(data);
+    })
     .catch(error => console.error("Error sending command:", error));
 }
 
