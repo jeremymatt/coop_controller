@@ -190,7 +190,7 @@ class coop_controller:
         #The main loop
         #Init a trigger to print the current state to the console for debugging
         #purposes
-        self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
+        # self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
         #Get the current times
         self.get_cur_time()
         #Generate boolean control variables based on the current time relative
@@ -210,7 +210,7 @@ class coop_controller:
         if self.cur_time > self.print_state_trigger:
             if settings.VERBOSE:
                 #Print every iteration
-                self.print_state_trigger = self.cur_time + dt.timedelta(seconds=30)
+                self.print_state_trigger = self.cur_time - dt.timedelta(seconds=30)
             else:
                 #Print only on event
                 self.print_state_trigger = self.cur_time + self.long_time
