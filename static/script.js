@@ -18,6 +18,8 @@ function sendCommand(command,document) {
 
 
 function updatePage(data,document) {
+    console.log("Data received in updatePage:", data);
+
     // Update text fields
     document.getElementById("door_current_state").innerText = data.door_current_state;
     document.getElementById("door_error_state").innerText = data.door_error_state;

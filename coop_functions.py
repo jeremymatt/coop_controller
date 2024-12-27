@@ -25,43 +25,6 @@ GPIO.setmode(GPIO.BCM)
 # Create queues for communication
 command_queue = Queue()
 response_queue = Queue()
-
-# def run_coop_controller(command_queue, response_queue):
-#     controller = coop_controller()
-#     while True:
-#         controller.update()
-#         # Check for commands from the main process
-#         if not command_queue.empty():
-#             command = command_queue.get()
-#             allowable_commands = [
-#                 'update',
-#                 'raise_door',
-#                 'lower_door',
-#                 'stop_door',
-#                 'cancel_override_door',
-#                 'light_on',
-#                 'light_off',
-#                 'cancel_override_light',
-#                 'clear_errors'
-#             ]
-#             if command in allowable_commands:
-#                 if command == "raise_door":
-#                     controller.override_door_raise()
-#                 elif command == "lower_door":
-#                     controller.override_door_lower()
-#                 elif command == "stop_door":
-#                     controller.door_stop()
-#                 elif command == "cancel_override_door":
-#                     controller.cancel_door_override()
-#                 elif command == "light_on":
-#                     controller.override_light_on()
-#                 elif command == "light_off":
-#                     controller.override_light_off()
-#                 elif command == "cancel_override_light":
-#                     controller.cancel_light_override()
-#                 elif command == "clear_errors":
-#                     controller.cancel_error()
-#                 response_queue.put(controller.return_current_state())
         
 def run_coop_controller(command_queue, response_queue):
     controller = coop_controller()
@@ -134,6 +97,18 @@ def get_datetime_parts():
     
     return y,mo,d,h,m,s
 
+def get_time_delta_string(earlier_time,later_time):
+    delta = later_time - earlier_time
+    delta = delta.days*3600*24+delta.seconds
+    prefix = ""
+    if delta<0:
+        delta *= -1
+        prefix = "(-)"
+    
+    hrs = str(delta//3600).zfill(2)
+    mins = str(delta//3600%60).zfill(2)
+    secs = str(delta//3600//60).zfill(2)
+    return "{}{}:{}:{}".format(prefix,hrs,mins,secs)
 
 def send_crash_notification(logfile_name):
     #SEnd a text message crash notification.  If that fails, write the failure 
@@ -349,11 +324,11 @@ class coop_controller:
             if self.cur_time>self.disp_blink_time:
                 if self.display_state:
                     self.lcd.color = [0,0,0]
-                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=.5)
+                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                     self.display_state = False
                 else:
                     self.lcd.color = [100,0,0]
-                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=.75)
+                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                     self.display_state = True
 
         else:
@@ -391,12 +366,14 @@ class coop_controller:
                 state['door_auto_state'] = "Auto"
         elif self.door_is_open and not self.door_is_closed:
             state['door_current_state'] = 'Fully open'
-            close_time,parts = self.get_datetime_string(self.close_time)
-            state['door_auto_state'] = 'Closing at {}'.format(close_time)
+            delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+            time_string,parts = self.get_datetime_string(self.close_time)
+            state['door_auto_state'] = 'Closing in {} at {}'.format(delta_time_string,time_string)
         elif not self.door_is_open and self.door_is_closed:
             state['door_current_state'] = 'Closed'
-            close_time,parts = self.get_datetime_string(self.sunrise)
-            state['door_auto_state'] = 'Opening at {}'.format(close_time)
+            delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+            time_string,parts = self.get_datetime_string(self.sunrise)
+            state['door_auto_state'] = 'Opening in {} at {}'.format(delta_time_string,time_string)
         else:
             if not self.door_is_opening:
                 state['door_current_state'] = 'Opening'
@@ -422,11 +399,13 @@ class coop_controller:
             state['light_auto_state'] = 'Overridden'
         else:
             if self.light_is_on:
-                sunset,parts = self.get_datetime_string(self.sunset)
-                state['light_auto_state'] = 'Turning off at {}'.format(sunset)
+                delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+                time_string,parts = self.get_datetime_string(self.sunset)
+                state['light_auto_state'] = 'Turning off in {} at {}'.format(delta_time_string,time_string)
             else:
-                sunrise,parts = self.get_datetime_string(self.sunrise)
-                state['light_auto_state'] = 'Turning on at {}'.format(sunrise)
+                delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+                time_string,parts = self.get_datetime_string(self.sunrise)
+                state['light_auto_state'] = 'Turning on in {} at {}'.format(delta_time_string,time_string)
 
         state['system_time'] = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
