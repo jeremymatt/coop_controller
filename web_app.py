@@ -35,7 +35,7 @@ def index():
 @app.route('/update', methods=['GET','POST'])
 def update():
     if request.method == "POST":
-        action = request.json.get('action')
+        action = request.json.get('command')
         print('received post request with action of: {}'.format(action))
         action = request.json.get('action')
         CF.command_queue.put(action)
