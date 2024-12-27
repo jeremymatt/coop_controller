@@ -53,45 +53,45 @@ def signal_handler(sig, frame):
 
 
 
-def run_coop_controller(command_queue, response_queue):
-    controller = CF.coop_controller()
-    while True:
-        # Simulate running the controller
-        controller.update()
-        with open('/home/circuit/github/coop_controller/test.log','a') as f:
-            f.write('test\n')
-        # Check for commands from the main process
-        if not command_queue.empty():
-            command = command_queue.get()
-            allowable_commands = [
-                'update',
-                'raise_door',
-                'lower_door',
-                'stop_door',
-                'cancel_override_door',
-                'light_on',
-                'light_off',
-                'cancel_override_light',
-                'clear_errors'
-            ]
-            if command in allowable_commands:
-                if command == "raise_door":
-                    controller.override_door_raise()
-                elif command == "lower_door":
-                    controller.override_door_lower()
-                elif command == "stop_door":
-                    controller.door_stop()
-                elif command == "cancel_override_door":
-                    controller.cancel_door_override()
-                elif command == "light_on":
-                    controller.override_light_on()
-                elif command == "light_off":
-                    controller.override_light_off()
-                elif command == "cancel_override_light":
-                    controller.cancel_light_override()
-                elif command == "clear_errors":
-                    controller.cancel_error()
-                response_queue.put(controller.return_current_state())
+# def run_coop_controller(command_queue, response_queue):
+#     controller = CF.coop_controller()
+#     while True:
+#         # Simulate running the controller
+#         controller.update()
+#         with open('/home/circuit/github/coop_controller/test.log','a') as f:
+#             f.write('test\n')
+#         # Check for commands from the main process
+#         if not command_queue.empty():
+#             command = command_queue.get()
+#             allowable_commands = [
+#                 'update',
+#                 'raise_door',
+#                 'lower_door',
+#                 'stop_door',
+#                 'cancel_override_door',
+#                 'light_on',
+#                 'light_off',
+#                 'cancel_override_light',
+#                 'clear_errors'
+#             ]
+#             if command in allowable_commands:
+#                 if command == "raise_door":
+#                     controller.override_door_raise()
+#                 elif command == "lower_door":
+#                     controller.override_door_lower()
+#                 elif command == "stop_door":
+#                     controller.door_stop()
+#                 elif command == "cancel_override_door":
+#                     controller.cancel_door_override()
+#                 elif command == "light_on":
+#                     controller.override_light_on()
+#                 elif command == "light_off":
+#                     controller.override_light_off()
+#                 elif command == "cancel_override_light":
+#                     controller.cancel_light_override()
+#                 elif command == "clear_errors":
+#                     controller.cancel_error()
+#                 response_queue.put(controller.return_current_state())
 
 if __name__ == '__main__':
     port = 8000
@@ -103,19 +103,9 @@ if __name__ == '__main__':
         print("Ngrok failed to start. Exiting.")
         exit(1)
 
-    # Create queues for communication
-    command_queue = Queue()
-    response_queue = Queue()
         
-    controller_process = Process(target=CF.run_coop_controller, args=(command_queue, response_queue))
+    controller_process = Process(target=CF.run_coop_controller, args=(CF.command_queue, CF.response_queue))
     controller_process.start()
-
-    """
-    # Start Flask app
-    try:
-        app.run(host="0.0.0.0", port=8000)
-    except KeyboardInterrupt:
-        cleanup(ngrok_process,controller_process)"""
 
     # Start Flask app
     try:
