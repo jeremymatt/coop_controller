@@ -26,7 +26,7 @@ GPIO.setmode(GPIO.BCM)
 command_queue = Queue()
 response_queue = Queue()
 
-def run_coop_controller(command_queue, response_queue):
+def run_coop_controller(command_queue=command_queue, response_queue=response_queue):
     controller = coop_controller()
     while True:
         # Simulate running the controller
