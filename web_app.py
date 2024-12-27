@@ -32,16 +32,30 @@ def index():
     else:
         return render_template('login.html')    
         
-@app.route('/update', methods=['POST'])
+@app.route('/update', methods=['GET','POST'])
 def update():
-    
-    action = request.json.get('action')
-    CF.command_queue.put(action)
-    while CF.response_queue.empty():
-        time.sleep(0.1)
-    data = CF.response_queue.get()
-    print(data)
-    return jsonify(data)
+    if request.method == "POST":
+        print('received post request')
+        action = request.json.get('action')
+        CF.command_queue.put(action)
+        while CF.response_queue.empty():
+            time.sleep(0.1)
+        data = CF.response_queue.get()
+        print(data)
+        return jsonify(data)
+    elif request.method == "GET":
+        print('received get request')
+        return  '''
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <!-- head definitions go here -->
+                    </head>
+                    <body>
+                        <!-- the content goes here -->
+                    </body>
+                </html>'''
+
 
 # @app.route('/update', methods=['POST'])
 # def update():
