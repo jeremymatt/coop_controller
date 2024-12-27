@@ -29,8 +29,9 @@ def index():
     else:
         return render_template('login.html')    
         
-@app.route('/update', methods=['GET','POST'])
+@app.route('/update', methods=['POST'])
 def update():
+    
     action = request.json.get('action')
     CF.command_queue.put(action)
     while CF.response_queue.empty():
@@ -38,6 +39,16 @@ def update():
     data = CF.response_queue.get()
     print(data)
     return jsonify(data)
+
+# @app.route('/update', methods=['POST'])
+# def update():
+#     data = request.json  # Get JSON data from the request
+#     command = data.get('command')  # Extract the command from the JSON payload
+#     print(f"Received command: {command}")  # Debugging log
+
+#     # Mock response for testing
+#     return jsonify({"status": "success", "command": command})
+
 
 @app.route("/logout", methods=["POST"])
 def logout():
