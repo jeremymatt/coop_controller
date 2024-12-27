@@ -99,7 +99,10 @@ def update():
     data = CF.response_queue.get()
     return jsonify(data)
 
-
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return redirect("/")
 
 
 if __name__ == '__main__':
