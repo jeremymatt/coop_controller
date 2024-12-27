@@ -7,7 +7,7 @@
 <body>
     <h1>COOP CONTROLLER</h1>
 
-    <h2>Door</h2><br>
+    <h2>Door</h2>
     Current state: <span id="door_current_state">Unknown</span><br>
     Error state: <span id="door_error_state">Unknown</span><br>
     Auto-door state: <span id="door_auto_state">Unknown</span><br>
@@ -16,8 +16,8 @@
     <button style="background-color:red;" onclick="sendCommand('stop_door')">Stop</button>
     <button style="background-color:grey;" onclick="sendCommand('cancel_override_door')">Auto</button><br><br>
 
-    <h2>Light</h2><br>
-    Current state: <span id="light_current_state">Unknown</span><br>
+    <h2>Light</h2>
+    <strong>Current state:</strong> <span id="light_current_state">Unknown</span><br>
     Auto-light state: <span id="light_auto_state">Unknown</span><br>
     <button style="background-color:green;" onclick="sendCommand('light_on')">On</button>
     <button style="background-color:red;" onclick="sendCommand('light_off')">Off</button>
