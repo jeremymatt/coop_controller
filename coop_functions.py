@@ -371,7 +371,7 @@ class coop_controller:
             state['door_auto_state'] = 'Closing in {} at {}'.format(delta_time_string,time_string)
         elif not self.door_is_open and self.door_is_closed:
             state['door_current_state'] = 'Closed'
-            delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+            delta_time_string = get_time_delta_string(self.cur_time,self.sunrise)
             time_string,parts = self.get_datetime_string(self.sunrise)
             state['door_auto_state'] = 'Opening in {} at {}'.format(delta_time_string,time_string)
         else:
@@ -399,11 +399,11 @@ class coop_controller:
             state['light_auto_state'] = 'Overridden'
         else:
             if self.light_is_on:
-                delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+                delta_time_string = get_time_delta_string(self.cur_time,self.sunset)
                 time_string,parts = self.get_datetime_string(self.sunset)
                 state['light_auto_state'] = 'Turning off in {} at {}'.format(delta_time_string,time_string)
             else:
-                delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
+                delta_time_string = get_time_delta_string(self.cur_time,self.sunrise)
                 time_string,parts = self.get_datetime_string(self.sunrise)
                 state['light_auto_state'] = 'Turning on in {} at {}'.format(delta_time_string,time_string)
 
