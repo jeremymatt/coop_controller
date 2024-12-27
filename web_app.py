@@ -6,7 +6,7 @@ from flask_cors import CORS
 
 
 app = Flask(__name__)
-CORS(app)  # Allow CORS for all routes
+# CORS(app)  # Allow CORS for all routes
 app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
 
 # Load credentials
@@ -37,7 +37,6 @@ def update():
     if request.method == "POST":
         action = request.json.get('command')
         print('received post request with action of: {}'.format(action))
-        action = request.json.get('action')
         CF.command_queue.put(action)
         while CF.response_queue.empty():
             time.sleep(0.1)
@@ -56,16 +55,6 @@ def update():
                         here be chickens
                     </body>
                 </html>'''
-
-
-# @app.route('/update', methods=['POST'])
-# def update():
-#     data = request.json  # Get JSON data from the request
-#     command = data.get('command')  # Extract the command from the JSON payload
-#     print(f"Received command: {command}")  # Debugging log
-
-#     # Mock response for testing
-#     return jsonify({"status": "success", "command": command})
 
 
 @app.route("/logout", methods=["POST"])
