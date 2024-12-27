@@ -70,7 +70,7 @@ if __name__ == '__main__':
     # Start Flask app
     try:
         print(f"Starting Flask app on port {port}...")
-        WA.app.run(port=port, debug=True)
+        WA.app.run(port=port, debug=True, use_reloader=False)
     except Exception as e:
         print(f"Failed to start Flask app: {e}")
     finally:
