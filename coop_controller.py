@@ -27,7 +27,39 @@ except Exception as e:
     CF.send_crash_notification(CF.logfile_name)
         
     CF.restart()
-        
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if (hashlib.md5(username.encode()).hexdigest() == USERNAME_HASH and
+                hashlib.md5(password.encode()).hexdigest() == PASSWORD_HASH):
+            session["authenticated"] = True
+            return redirect("/")
+
+    if session.get("authenticated"):
+        return render_template("template.html")
+    else:
+        return '''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Login</title>
+        </head>
+        <body>
+            <h1>Login</h1>
+            <form method="post">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username"><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password"><br><br>
+                <button type="submit">Login</button>
+            </form>
+        </body>
+        </html>
+        '''     
         
 @app.route('/update', methods=['GET'])
 def update():
@@ -37,6 +69,8 @@ def update():
         time.sleep(0.1)
     data = CF.response_queue.get()
     return jsonify(data)
+
+
 
 
 if __name__ == '__main__':
