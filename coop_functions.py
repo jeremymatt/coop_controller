@@ -100,6 +100,8 @@ def get_datetime_parts():
 def get_time_delta_string(earlier_time,later_time):
     delta = later_time - earlier_time
     delta = delta.days*3600*24+delta.seconds
+    if delta<-3600:
+        delta+=3600*24
     print('{}-{}={}'.format(later_time,earlier_time,delta))
     prefix = ""
     if delta<0:
@@ -315,7 +317,7 @@ class coop_controller:
         if self.error_state:
             if not self.in_error_state:
                 self.display_state = True
-                self.disp_blink_time = self.cur_time + dt.timedelta(seconds=0.5)
+                self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 self.in_error_state = True
                 self.print_state('IN ERROR STATE\n')
                 self.lcd.color = [100, 0, 0]
