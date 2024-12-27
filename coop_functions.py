@@ -385,6 +385,10 @@ class coop_controller:
         state = {}
         if self.door_is_open and self.door_is_closed:
             state['door_current_state'] = "Unknown"
+            if self.door_state_override:
+                state['door_auto_state'] = "Overriden"
+            else:
+                state['door_auto_state'] = "Auto"
         elif self.door_is_open and not self.door_is_closed:
             state['door_current_state'] = 'Fully open'
             close_time,parts = self.get_datetime_string(self.close_time)
@@ -424,7 +428,7 @@ class coop_controller:
                 sunrise,parts = self.get_datetime_string(self.sunrise)
                 state['light_auto_state'] = 'Turning on at {}'.format(sunrise)
 
-        state['system_time'] = dt.datetime.now().strftime('%Y:%m:%d %H:%M:%S')
+        state['system_time'] = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         return state
             
@@ -500,7 +504,6 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken door opening:\n  time: {}'.format(string)
-            # msg = 'CHiCKeN DooR OpEnIng:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_raise()
             
@@ -515,7 +518,6 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken door closing:\n  time: {}'.format(string)
-            # msg = 'cHicKen DOOr ClOsiNG:\n  time: {}'.format(string)
             self.queue_notification(msg)
             self.door_lower()
             
@@ -523,7 +525,6 @@ class coop_controller:
             string,parts = self.get_datetime_string(self.cur_time)
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             msg = 'Chicken light turning on:\n  time: {}'.format(string)
-            # msg = 'ChiCKen liGhT tUrNiNG on:\n  time: {}'.format(string)
             if settings.notify_lights:
                 self.queue_notification(msg)
             self.light_on()
@@ -720,6 +721,8 @@ class coop_controller:
         self.in_sub_menu = False
         self.cur_menu = 1
         self.error_state = False
+        self.update_display()
+
             
     def update_display(self):
         if self.display_is_on:    
