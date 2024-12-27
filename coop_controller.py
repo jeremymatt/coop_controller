@@ -115,7 +115,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         cleanup()
 
-
     # Start Flask app
     try:
         print(f"Starting Flask app on port {port}...")
