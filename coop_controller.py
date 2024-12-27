@@ -97,6 +97,7 @@ def update():
     while CF.response_queue.empty():
         time.sleep(0.1)
     data = CF.response_queue.get()
+    print(data)
     return jsonify(data)
 
 @app.route("/logout", methods=["POST"])
