@@ -1,16 +1,16 @@
+function sendCommand(command) {
+    fetch("/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command }),
+    })
+    .then(response => response.json())
+    .then(data => updatePage(data))
+    .catch(error => console.error("Error sending command:", error));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const updateInterval = 1000; // Update every second
-
-    function sendCommand(command) {
-        fetch("/update", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ command }),
-        })
-        .then(response => response.json())
-        .then(data => updatePage(data))
-        .catch(error => console.error("Error sending command:", error));
-    }
 
     function fetchUpdate() {
         sendCommand("update");
