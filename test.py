@@ -37,7 +37,7 @@ def index():
         <!DOCTYPE html>
         <html>
         <head>
-            <script src="/static/script.js"></script>
+            <script src="/static/test_script.js"></script>
         </head>
         <body>
             <h1>Chicken Coop Controller</h1>
