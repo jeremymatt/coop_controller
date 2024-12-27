@@ -210,7 +210,7 @@ class coop_controller:
         if self.cur_time > self.print_state_trigger:
             if settings.VERBOSE:
                 #Print every iteration
-                self.print_state_trigger = self.cur_time - dt.timedelta(seconds=30)
+                self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
             else:
                 #Print only on event
                 self.print_state_trigger = self.cur_time + self.long_time
@@ -995,6 +995,7 @@ class coop_controller:
         self.door_is_closing = False
         self.door_travel_stop_time = self.cur_time+self.long_time
         self.clear_light_override = self.cur_time+self.long_time
+        self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
         self.door_state_override = False
         self.light_state_override = False
         self.light_state_override_timer = False
