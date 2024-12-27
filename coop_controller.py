@@ -14,6 +14,7 @@ import time
 import subprocess
 import signal
 import sys
+import hashlib
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
@@ -50,6 +51,12 @@ def signal_handler(sig, frame):
     cleanup()
 
 
+# Load credentials
+with open('credentials.config', 'r') as file:
+    credentials = file.read().splitlines()
+    USERNAME_HASH = credentials[0].strip()
+    PASSWORD_HASH = credentials[1].strip()
+    
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
