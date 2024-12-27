@@ -1,6 +1,6 @@
 function sendCommand(command) {
     console.log(`Sending command: ${command}`);
-    fetch("https://chickencoop.fun/update", {
+    fetch("chickencoop.fun/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ command }),
