@@ -58,7 +58,8 @@ def run_coop_controller(command_queue, response_queue):
     while True:
         # Simulate running the controller
         controller.update()
-        print('test')
+        with open('test.log','a') as f:
+            f.write('test\n')
         # Check for commands from the main process
         if not command_queue.empty():
             command = command_queue.get()
