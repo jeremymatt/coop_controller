@@ -49,10 +49,10 @@ def update():
                 <!DOCTYPE html>
                 <html>
                     <head>
-                        <!-- head definitions go here -->
+                        <h1> HELLO WORLD </h1>
                     </head>
                     <body>
-                        <!-- the content goes here -->
+                        here be chickens
                     </body>
                 </html>'''
 
