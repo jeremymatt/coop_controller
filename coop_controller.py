@@ -15,9 +15,10 @@ import subprocess
 import signal
 import sys
 import hashlib
+import web_app as WA
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
+# app = Flask(__name__)
+# app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
 
 def start_ngrok(port, static_ngrok_url):
     """Start Ngrok with the specified static URL."""
@@ -51,60 +52,6 @@ def signal_handler(sig, frame):
     cleanup()
 
 
-# Load credentials
-with open('credentials.config', 'r') as file:
-    credentials = file.read().splitlines()
-    USERNAME_HASH = credentials[0].strip()
-    PASSWORD_HASH = credentials[1].strip()
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        if (hashlib.md5(username.encode()).hexdigest() == USERNAME_HASH and
-                hashlib.md5(password.encode()).hexdigest() == PASSWORD_HASH):
-            session["authenticated"] = True
-            return redirect("/")
-
-    if session.get("authenticated"):
-        return render_template("template.html")
-    else:
-        return '''
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Login</title>
-        </head>
-        <body>
-            <h1>Login</h1>
-            <form method="post">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username"><br><br>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password"><br><br>
-                <button type="submit">Login</button>
-            </form>
-        </body>
-        </html>
-        '''     
-        
-@app.route('/update', methods=['GET','POST'])
-def update():
-    action = request.json.get('action')
-    CF.command_queue.put(action)
-    while CF.response_queue.empty():
-        time.sleep(0.1)
-    data = CF.response_queue.get()
-    print(data)
-    return jsonify(data)
-
-@app.route("/logout", methods=["POST"])
-def logout():
-    session.clear()
-    return redirect("/")
-
 
 if __name__ == '__main__':
     port = 8000
@@ -120,17 +67,17 @@ if __name__ == '__main__':
     controller_process = Process(target=CF.run_coop_controller, args=(CF.command_queue, CF.response_queue))
     controller_process.start()
 
-
+    """
     # Start Flask app
     try:
         app.run(host="0.0.0.0", port=8000)
     except KeyboardInterrupt:
-        cleanup()
+        cleanup(ngrok_process,controller_process)"""
 
     # Start Flask app
     try:
         print(f"Starting Flask app on port {port}...")
-        app.run(port=port, debug=True)
+        WA.app.run(port=port, debug=True)
     except Exception as e:
         print(f"Failed to start Flask app: {e}")
     finally:
