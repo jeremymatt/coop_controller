@@ -109,8 +109,8 @@ def get_time_delta_string(earlier_time,later_time):
         prefix = "(-)"
     
     hrs = str(delta//3600).zfill(2)
-    mins = str(delta//3600%60).zfill(2)
-    secs = str(delta//3600//60).zfill(2)
+    mins = str(delta%3600//60).zfill(2)
+    secs = str(delta%3600%60).zfill(2)
     print("delta:{}, hrs:{}, mins:{}, secs{}".format(delta,hrs,mins,secs))
     return "{}{}:{}:{}".format(prefix,hrs,mins,secs)
 
