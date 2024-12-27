@@ -1,6 +1,6 @@
 from flask import Flask, session, request, redirect, jsonify, render_template
 import hashlib
-import controller_functions as CF
+import coop_functions as CF
 
 
 app = Flask(__name__)
