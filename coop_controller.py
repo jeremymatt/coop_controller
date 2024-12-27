@@ -90,7 +90,7 @@ def index():
         </html>
         '''     
         
-@app.route('/update', methods=['GET'])
+@app.route('/update', methods=['GET','POST'])
 def update():
     action = request.json.get('action')
     CF.command_queue.put(action)
