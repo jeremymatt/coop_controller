@@ -8,7 +8,7 @@ Created on Fri Dec 10 11:34:53 2021
 
 import coop_functions as CF
 import traceback
-from flask import Flask, jsonify, request
+from flask import Flask, session, request, jsonify, render_template
 from multiprocessing import Process
 import time
 import subprocess
@@ -16,6 +16,7 @@ import signal
 import sys
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
 
 def start_ngrok(port, static_ngrok_url):
     """Start Ngrok with the specified static URL."""
