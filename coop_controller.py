@@ -100,7 +100,6 @@ command_queue = Queue()
 response_queue = Queue()
 
 app = Flask(__name__)
-# CORS(app)  # Allow CORS for all routes
 app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
 
 # Load credentials
