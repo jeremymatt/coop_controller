@@ -11,22 +11,43 @@ import traceback
 from flask import Flask, jsonify, request
 from multiprocessing import Process
 import time
+import subprocess
+import signal
+import sys
 
 app = Flask(__name__)
+
+def start_ngrok(port, static_ngrok_url):
+    """Start Ngrok with the specified static URL."""
+    try:
+        ngrok_process = subprocess.Popen(
+            ["ngrok", "http", str(port), "--url", static_ngrok_url],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        print(f"Ngrok started with static URL: {static_ngrok_url}")
+        # Optionally, print output for debugging
+        time.sleep(5)  # Wait for Ngrok to initialize
+        return ngrok_process
+    except Exception as e:
+        print(f"Failed to start Ngrok: {e}")
+        return None
    
-try:
-    process = Process(target=CF.run_coop_controller, args=(CF.command_queue, CF.response_queue))
-    process.start()
-except Exception as e:
-    err_msg = str(e)
-    
-    with open(CF.logfile_name, 'a') as file:
-        file.write('\nCONTROLLER CRASH TRACEBACK\n')
-        traceback.print_exc(limit=None, file=file, chain=True)
-    
-    CF.send_crash_notification(CF.logfile_name)
-        
-    CF.restart()
+def cleanup(ngrok_process,controller_process):
+    print("\nCleaning up...")
+    if ngrok_process:
+        ngrok_process.terminate()
+        print("ngrok process terminated.")
+    if controller_process:
+        controller_process.terminate()
+        print("Coop controller process terminated.")
+    sys.exit(0)
+
+# Signal handler
+def signal_handler(sig, frame):
+    cleanup()
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -74,5 +95,32 @@ def update():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    port = 8000
+    ngrok_static_url = 'chickencoop.fun'
+
+    # Start Ngrok
+    ngrok_process = start_ngrok(port, ngrok_static_url)
+    if not ngrok_process:
+        print("Ngrok failed to start. Exiting.")
+        exit(1)
+
+        
+    controller_process = Process(target=CF.run_coop_controller, args=(CF.command_queue, CF.response_queue))
+    controller_process.start()
+
+
+    # Start Flask app
+    try:
+        app.run(host="0.0.0.0", port=8000)
+    except KeyboardInterrupt:
+        cleanup()
+
+    # Start Flask app
+    try:
+        print(f"Starting Flask app on port {port}...")
+        app.run(port=port, debug=True)
+    except Exception as e:
+        print(f"Failed to start Flask app: {e}")
+    finally:
+        cleanup(ngrok_process,controller_process)
     
