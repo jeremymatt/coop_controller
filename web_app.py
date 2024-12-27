@@ -15,6 +15,7 @@ with open('credentials.config', 'r') as file:
     USERNAME_HASH = credentials[0].strip()
     PASSWORD_HASH = credentials[1].strip()
 
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
