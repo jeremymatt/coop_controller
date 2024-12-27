@@ -8,7 +8,7 @@ Created on Fri Dec 10 11:34:53 2021
 
 import coop_functions as CF
 import traceback
-from flask import Flask, session, request, jsonify, render_template
+from flask import Flask, session, request, redirect, jsonify, render_template
 from multiprocessing import Process
 import time
 import subprocess
@@ -56,7 +56,7 @@ with open('credentials.config', 'r') as file:
     credentials = file.read().splitlines()
     USERNAME_HASH = credentials[0].strip()
     PASSWORD_HASH = credentials[1].strip()
-    
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
