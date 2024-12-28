@@ -699,6 +699,7 @@ class coop_controller:
             self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
             
     def cancel_error(self):
+        print('\n\nCANCELING ERROR\n\n')
         self.in_sub_menu = False
         self.cur_menu = 1
         self.error_state = False
@@ -715,7 +716,6 @@ class coop_controller:
                     self.display_state = True
                     self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 if self.cur_time>self.disp_blink_time:
-                    print('\n\nUPDATE DISP BLINK TIME\n\n')
                     if self.display_state:
                         self.lcd.color = lcd_red
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
