@@ -708,16 +708,6 @@ class coop_controller:
             
     def update_display(self):
         if self.display_is_on:    
-            if type(self.display_message) == str:
-                self.msg = self.display_message
-            else:
-                self.msg = self.display_message()
-                
-            if self.prev_display_message != self.msg:
-                self.lcd.clear()
-                self.lcd.message = self.msg
-                self.prev_display_message = self.msg
-
             if self.error_state:
                 
                 if self.cur_time>self.disp_blink_time:
@@ -729,6 +719,17 @@ class coop_controller:
                         self.lcd.color = [100,0,0]
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                         self.display_state = True
+            else:
+                if type(self.display_message) == str:
+                    self.msg = self.display_message
+                else:
+                    self.msg = self.display_message()
+                    
+                if self.prev_display_message != self.msg:
+                    self.lcd.clear()
+                    self.lcd.message = self.msg
+                    self.prev_display_message = self.msg
+
         
     def override_door_raise(self):
         self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
