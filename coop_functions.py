@@ -1006,6 +1006,8 @@ class coop_controller:
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
+        self.lcd.message = self.display_message
+        print('\n\nTESTING COLORS\n\n')
         time.sleep(2)
         self.lcd.color = [100,0,0]
         time.sleep(2)
