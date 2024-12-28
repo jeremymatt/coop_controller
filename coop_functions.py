@@ -25,6 +25,9 @@ GPIO.setmode(GPIO.BCM)
 # Create queues for communication
 command_queue = Queue()
 response_queue = Queue()
+
+lcd_red = [100,0,0]
+lcd_green = [0,100,0]
         
 def run_coop_controller(command_queue, response_queue):
     controller = coop_controller()
@@ -1017,6 +1020,15 @@ class coop_controller:
         time.sleep(sleep_time)
         print('0,0,100')
         self.lcd.color = [0,0,100]
+        time.sleep(sleep_time)
+        print('100,100,0')
+        self.lcd.color = [100,100,0]
+        time.sleep(sleep_time)
+        print('0,100,100')
+        self.lcd.color = [0,100,100]
+        time.sleep(sleep_time)
+        print('100,0,100')
+        self.lcd.color = [100,0,100]
         time.sleep(sleep_time)
         print('0,0,0')
         self.lcd.color = [0,0,0]
