@@ -1021,7 +1021,8 @@ class coop_controller:
     
     def display_on(self):
         self.display_is_on = True
-        self.lcd.color = lcd_green
+        if not self.in_error_state:
+            self.lcd.color = lcd_green
         
     def display_off(self):
         self.display_is_on = False
