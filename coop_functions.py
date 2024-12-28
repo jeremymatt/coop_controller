@@ -377,6 +377,7 @@ class coop_controller:
             time_string,parts = self.get_datetime_string(self.sunrise)
             state['door_auto_state'] = 'Opening at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
         else:
+            print('\n\nDoor is stopped: {}'.format(self.door_is_stopped))
             if self.door_is_stopped:
                 self.door_current_state = 'Stopped'
             else:
