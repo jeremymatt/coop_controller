@@ -377,12 +377,15 @@ class coop_controller:
             time_string,parts = self.get_datetime_string(self.sunrise)
             state['door_auto_state'] = 'Opening at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
         else:
-            if not self.door_is_opening:
-                state['door_current_state'] = 'Opening'
-            elif not self.door_is_closing:
-                state['door_current_state'] = 'Closing'
+            if self.door_is_stopped:
+                self.door_current_state = 'Stopped'
             else:
-                state['door_current_state'] = 'Partially open'
+                if self.door_is_opening:
+                    state['door_current_state'] = 'Opening'
+                elif self.door_is_closing:
+                    state['door_current_state'] = 'Closing'
+                else:
+                    state['door_current_state'] = 'Partially open'
 
         if self.error_state:
             state['door_error_state'] = self.error_state_text
@@ -757,6 +760,7 @@ class coop_controller:
         GPIO.output(self.pins['door_lower'], GPIO.LOW)
         self.door_is_opening = False
         self.door_is_closing = False
+        self.door_is_stopped = True
         self.door_move_end_time = self.cur_time+self.long_time
         
     def door_raise(self):
@@ -765,6 +769,7 @@ class coop_controller:
         GPIO.output(self.pins['door_raise'], GPIO.HIGH)
         self.door_is_opening = True
         self.door_is_closing = False
+        self.door_is_stopped = False
         self.door_closing_complete = False
         self.door_opening_complete = False
         self.door_move_end_time = self.cur_time+self.door_travel_time
@@ -775,6 +780,7 @@ class coop_controller:
         GPIO.output(self.pins['door_lower'], GPIO.HIGH)
         self.door_is_opening = False
         self.door_is_closing = True
+        self.door_is_stopped = False
         self.door_closing_complete = False
         self.door_opening_complete = False
         self.door_move_end_time = self.cur_time+self.door_travel_time
@@ -1047,6 +1053,7 @@ class coop_controller:
         self.door_opening_complete = False
         self.door_is_opening = False
         self.door_is_closing = False
+        self.door_is_stopped = True
         self.door_travel_stop_time = self.cur_time+self.long_time
         self.clear_light_override = self.cur_time+self.long_time
         self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
