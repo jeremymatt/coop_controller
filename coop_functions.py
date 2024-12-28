@@ -370,12 +370,12 @@ class coop_controller:
             state['door_current_state'] = 'Fully open'
             delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
             time_string,parts = self.get_datetime_string(self.close_time)
-            state['door_auto_state'] = 'Closing in {} at {}'.format(delta_time_string,time_string)
+            state['door_auto_state'] = 'Closing at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
         elif not self.door_is_open and self.door_is_closed:
             state['door_current_state'] = 'Closed'
             delta_time_string = get_time_delta_string(self.cur_time,self.sunrise)
             time_string,parts = self.get_datetime_string(self.sunrise)
-            state['door_auto_state'] = 'Opening in {} at {}'.format(delta_time_string,time_string)
+            state['door_auto_state'] = 'Opening at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
         else:
             if not self.door_is_opening:
                 state['door_current_state'] = 'Opening'
