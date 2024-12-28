@@ -328,7 +328,6 @@ class coop_controller:
                 self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 self.in_error_state = True
                 self.print_state('IN ERROR STATE\n')
-                self.lcd.color = [100, 0, 0]
                 self.lcd.message = self.error_msg
             self.get_cur_time()
             self.check_send_notification_time()
@@ -712,6 +711,7 @@ class coop_controller:
         self.cur_menu = 1
         self.error_state = False
         self.in_error_state = False
+        self.lcd.color = lcd_green
         self.update_display()
 
             
@@ -721,23 +721,23 @@ class coop_controller:
                 
                 if self.cur_time>self.disp_blink_time:
                     if self.display_state:
-                        self.lcd.color = [0,0,0]
+                        self.lcd.color = lcd_red
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = False
                     else:
-                        self.lcd.color = [100,0,0]
+                        self.lcd.color = lcd_green
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                         self.display_state = True
+
+            if isinstance(self.display_message,str):
+                self.msg = self.display_message
             else:
-                if isinstance(self.display_message,str):
-                    self.msg = self.display_message
-                else:
-                    self.msg = self.display_message()
-                    
-                if self.prev_display_message != self.msg:
-                    self.lcd.clear()
-                    self.lcd.message = self.msg
-                    self.prev_display_message = self.msg
+                self.msg = self.display_message()
+                
+            if self.prev_display_message != self.msg:
+                self.lcd.clear()
+                self.lcd.message = self.msg
+                self.prev_display_message = self.msg
 
         
     def override_door_raise(self):
@@ -1014,7 +1014,7 @@ class coop_controller:
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
-        testing_colors = True
+        testing_colors = False
         if testing_colors:
             self.lcd.message = self.display_message
             print('\n\nTESTING COLORS\n\n')
@@ -1027,7 +1027,7 @@ class coop_controller:
     
     def display_on(self):
         self.display_is_on = True
-        self.lcd.color = [100, 0, 0]
+        self.lcd.color = lcd_green
         
     def display_off(self):
         self.display_is_on = False
