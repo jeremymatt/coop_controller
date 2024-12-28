@@ -689,6 +689,7 @@ class coop_controller:
         
     def do_button(self,button):
         time.sleep(0.1)
+        print('\n\nCurrent menu: {}, sub_menu: {}, button: {}'.format(self.cur_menu, self.in_sub_menu,button))
         if self.button_menu[self.cur_menu][self.in_sub_menu][button] != None:
             self.display_off_time = self.cur_time + dt.timedelta(seconds=settings.screen_on_time)
             if not self.display_is_on:
