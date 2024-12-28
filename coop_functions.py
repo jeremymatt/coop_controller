@@ -1008,16 +1008,26 @@ class coop_controller:
         self.display_message = 'HI! Starting the\nstream'
         self.lcd.message = self.display_message
         print('\n\nTESTING COLORS\n\n')
-        time.sleep(2)
+        sleep_time = 5
+        time.sleep(sleep_time)
+        print('100,0,0')
         self.lcd.color = [100,0,0]
-        time.sleep(2)
+        time.sleep(sleep_time)
+        print('75,0,0')
         self.lcd.color = [75,0,0]
-        time.sleep(2)
+        time.sleep(sleep_time)
+        print('50,0,0')
         self.lcd.color = [50,0,0]
-        time.sleep(2)
+        time.sleep(sleep_time)
+        print('0,100,0')
         self.lcd.color = [0,100,0]
-        time.sleep(2)
+        time.sleep(sleep_time)
+        print('0,0,100')
         self.lcd.color = [0,0,100]
+        time.sleep(sleep_time)
+        print('0,0,0')
+        self.lcd.color = [0,0,0]
+        time.sleep(sleep_time)
         self.prev_display_message = 'none'
         
     
