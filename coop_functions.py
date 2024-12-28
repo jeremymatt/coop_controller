@@ -721,7 +721,7 @@ class coop_controller:
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                         self.display_state = True
             else:
-                if type(self.display_message) == str:
+                if isinstance(self.display_message,str):
                     self.msg = self.display_message
                 else:
                     self.msg = self.display_message()
@@ -1006,6 +1006,16 @@ class coop_controller:
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
+        time.sleep(2)
+        self.lcd.color = [100,0,0]
+        time.sleep(2)
+        self.lcd.color = [75,0,0]
+        time.sleep(2)
+        self.lcd.color = [50,0,0]
+        time.sleep(2)
+        self.lcd.color = [0,100,0]
+        time.sleep(2)
+        self.lcd.color = [0,0,100]
         self.prev_display_message = 'none'
         
     
