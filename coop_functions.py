@@ -703,6 +703,7 @@ class coop_controller:
         self.in_sub_menu = False
         self.cur_menu = 1
         self.error_state = False
+        self.in_error_state = False
         self.update_display()
 
             
