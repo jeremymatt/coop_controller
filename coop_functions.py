@@ -331,15 +331,6 @@ class coop_controller:
                 self.lcd.message = self.error_msg
             self.get_cur_time()
             self.check_send_notification_time()
-            # if self.cur_time>self.disp_blink_time:
-            #     if self.display_state:
-            #         self.lcd.color = [0,0,0]
-            #         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
-            #         self.display_state = False
-            #     else:
-            #         self.lcd.color = [100,0,0]
-            #         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
-            #         self.display_state = True
 
         else:
             self.in_error_state = False
@@ -722,13 +713,14 @@ class coop_controller:
                     self.display_state = True
                     self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 if self.cur_time>self.disp_blink_time:
+                    print('\n\nUPDATE DISP BLINK TIME\n\n')
                     if self.display_state:
                         self.lcd.color = lcd_red
-                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                         self.display_state = False
                     else:
                         self.lcd.color = lcd_green
-                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
                         self.display_state = True
 
             if isinstance(self.display_message,str):
