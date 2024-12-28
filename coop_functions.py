@@ -339,8 +339,8 @@ class coop_controller:
                     
         if self.in_error_state:
             self.display_on()
-            self.cur_menu = 0
-            self.in_sub_menu = False
+            # self.cur_menu = -3
+            # self.in_sub_menu = False
             self.update_display()
             
 
