@@ -326,6 +326,7 @@ class coop_controller:
             if not self.in_error_state:
                 self.display_state = True
                 self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
+                self.display_off_time = self.cur_time + self.long_time
                 self.in_error_state = True
                 self.print_state('IN ERROR STATE\n')
                 self.lcd.message = self.error_msg
@@ -703,6 +704,7 @@ class coop_controller:
         self.error_state = False
         self.in_error_state = False
         self.lcd.color = lcd_green
+        self.display_off_time = self.cur_time + dt.timedelta(seconds=settings.screen_on_time)
         self.update_display()
 
             
