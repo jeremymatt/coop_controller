@@ -116,10 +116,10 @@ def get_time_delta_string(earlier_time,later_time):
         delta *= -1
         prefix = "(-)"
     
-    hrs = str(delta//3600).zfill(2)
-    mins = str(delta%3600//60).zfill(2)
-    secs = str(delta%3600%60).zfill(2)
-    return "{}{}h{}m".format(prefix,hrs,mins)
+    hrs = str(delta//3600)
+    mins = str(delta%3600//60)
+    secs = str(delta%3600%60)
+    return "{}{}hrs {}mins".format(prefix,hrs,mins)
 
 def send_crash_notification(logfile_name):
     #SEnd a text message crash notification.  If that fails, write the failure 
@@ -403,11 +403,11 @@ class coop_controller:
             if self.light_is_on:
                 delta_time_string = get_time_delta_string(self.cur_time,self.sunset)
                 time_string,parts = self.get_datetime_string(self.sunset)
-                state['light_auto_state'] = 'Turning off in {} at {}'.format(delta_time_string,time_string)
+                state['light_auto_state'] = 'Turning off at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
             else:
                 delta_time_string = get_time_delta_string(self.cur_time,self.sunrise)
                 time_string,parts = self.get_datetime_string(self.sunrise)
-                state['light_auto_state'] = 'Turning on in {} at {}'.format(delta_time_string,time_string)
+                state['light_auto_state'] = 'Turning on at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
 
         state['system_time'] = dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
