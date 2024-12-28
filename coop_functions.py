@@ -379,7 +379,7 @@ class coop_controller:
         else:
             print('\n\nDoor is stopped: {}'.format(self.door_is_stopped))
             if self.door_is_stopped:
-                self.door_current_state = 'Stopped'
+                state['door_current_state'] = 'Stopped'
             else:
                 if self.door_is_opening:
                     state['door_current_state'] = 'Opening'
