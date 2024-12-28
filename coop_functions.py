@@ -111,8 +111,7 @@ def get_time_delta_string(earlier_time,later_time):
     hrs = str(delta//3600).zfill(2)
     mins = str(delta%3600//60).zfill(2)
     secs = str(delta%3600%60).zfill(2)
-    print("delta:{}, hrs:{}, mins:{}, secs{}".format(delta,hrs,mins,secs))
-    return "{}{}:{}:{}".format(prefix,hrs,mins,secs)
+    return "{}{}h{}m".format(prefix,hrs,mins)
 
 def send_crash_notification(logfile_name):
     #SEnd a text message crash notification.  If that fails, write the failure 
@@ -325,15 +324,15 @@ class coop_controller:
                 self.lcd.message = self.error_msg
             self.get_cur_time()
             self.check_send_notification_time()
-            if self.cur_time>self.disp_blink_time:
-                if self.display_state:
-                    self.lcd.color = [0,0,0]
-                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
-                    self.display_state = False
-                else:
-                    self.lcd.color = [100,0,0]
-                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
-                    self.display_state = True
+            # if self.cur_time>self.disp_blink_time:
+            #     if self.display_state:
+            #         self.lcd.color = [0,0,0]
+            #         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
+            #         self.display_state = False
+            #     else:
+            #         self.lcd.color = [100,0,0]
+            #         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+            #         self.display_state = True
 
         else:
             self.in_error_state = False
@@ -718,6 +717,18 @@ class coop_controller:
                 self.lcd.clear()
                 self.lcd.message = self.msg
                 self.prev_display_message = self.msg
+
+            if self.error_state:
+                
+                if self.cur_time>self.disp_blink_time:
+                    if self.display_state:
+                        self.lcd.color = [0,0,0]
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
+                        self.display_state = False
+                    else:
+                        self.lcd.color = [100,0,0]
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+                        self.display_state = True
         
     def override_door_raise(self):
         self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
