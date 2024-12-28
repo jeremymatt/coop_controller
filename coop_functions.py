@@ -534,10 +534,10 @@ class coop_controller:
         self.button_menu[menu][sub_menu] = {}
         self.button_menu[menu][sub_menu]['msg'] = self.disp_error_msg
         self.button_menu[menu][sub_menu]['select'] = self.cancel_error
-        self.button_menu[menu][sub_menu]['left'] = None
-        self.button_menu[menu][sub_menu]['right'] = None
-        self.button_menu[menu][sub_menu]['up'] = None
-        self.button_menu[menu][sub_menu]['down'] = None
+        self.button_menu[menu][sub_menu]['left'] = self.cancel_error
+        self.button_menu[menu][sub_menu]['right'] = self.cancel_error
+        self.button_menu[menu][sub_menu]['up'] = self.cancel_error
+        self.button_menu[menu][sub_menu]['down'] = self.cancel_error
         
         menu = -2
         sub_menu = False
