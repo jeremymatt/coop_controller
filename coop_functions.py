@@ -28,6 +28,11 @@ response_queue = Queue()
 
 lcd_red = [100,0,0]
 lcd_green = [0,100,0]
+lcd_blue = [0,0,100]
+lcd_yellow = [100,100,0]
+lcd_teal = [0,100,100]
+lcd_magenta = [100,0,100]
+
         
 def run_coop_controller(command_queue, response_queue):
     controller = coop_controller()
@@ -1009,30 +1014,14 @@ class coop_controller:
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
-        self.lcd.message = self.display_message
-        print('\n\nTESTING COLORS\n\n')
-        sleep_time = 5
-        print('100,0,0')
-        self.lcd.color = [100,0,0]
-        time.sleep(sleep_time)
-        print('0,100,0')
-        self.lcd.color = [0,100,0]
-        time.sleep(sleep_time)
-        print('0,0,100')
-        self.lcd.color = [0,0,100]
-        time.sleep(sleep_time)
-        print('100,100,0')
-        self.lcd.color = [100,100,0]
-        time.sleep(sleep_time)
-        print('0,100,100')
-        self.lcd.color = [0,100,100]
-        time.sleep(sleep_time)
-        print('100,0,100')
-        self.lcd.color = [100,0,100]
-        time.sleep(sleep_time)
-        print('0,0,0')
-        self.lcd.color = [0,0,0]
-        time.sleep(sleep_time)
+        testing_colors = True
+        if testing_colors:
+            self.lcd.message = self.display_message
+            print('\n\nTESTING COLORS\n\n')
+            for color in [lcd_red,lcd_green,lcd_blue,lcd_magenta,lcd_teal,lcd_yellow]:
+                print(color)
+                self.lcd.color = color
+                time.sleep(5)
         self.prev_display_message = 'none'
         
     
