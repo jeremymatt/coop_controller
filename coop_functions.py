@@ -718,7 +718,9 @@ class coop_controller:
     def update_display(self):
         if self.display_is_on:    
             if self.error_state:
-                
+                if isinstance(self.disp_blink_time,type(None)):
+                    self.display_state = True
+                    self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 if self.cur_time>self.disp_blink_time:
                     if self.display_state:
                         self.lcd.color = lcd_red
@@ -726,7 +728,7 @@ class coop_controller:
                         self.display_state = False
                     else:
                         self.lcd.color = lcd_green
-                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = True
 
             if isinstance(self.display_message,str):
