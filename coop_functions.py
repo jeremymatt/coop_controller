@@ -718,11 +718,11 @@ class coop_controller:
                     print('\n\nUPDATE DISP BLINK TIME\n\n')
                     if self.display_state:
                         self.lcd.color = lcd_red
-                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = False
                     else:
                         self.lcd.color = lcd_green
-                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=2)
+                        self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = True
 
             if isinstance(self.display_message,str):
