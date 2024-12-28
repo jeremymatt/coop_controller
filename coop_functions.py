@@ -1009,15 +1009,8 @@ class coop_controller:
         self.lcd.message = self.display_message
         print('\n\nTESTING COLORS\n\n')
         sleep_time = 5
-        time.sleep(sleep_time)
         print('100,0,0')
         self.lcd.color = [100,0,0]
-        time.sleep(sleep_time)
-        print('75,0,0')
-        self.lcd.color = [75,0,0]
-        time.sleep(sleep_time)
-        print('50,0,0')
-        self.lcd.color = [50,0,0]
         time.sleep(sleep_time)
         print('0,100,0')
         self.lcd.color = [0,100,0]
