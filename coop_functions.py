@@ -531,6 +531,17 @@ class coop_controller:
     
     def init_button_menu(self):
         self.button_menu = {}
+        menu = -4
+        sub_menu = False
+        self.button_menu[menu] = {}
+        self.button_menu[menu][sub_menu] = {}
+        self.button_menu[menu][sub_menu]['msg'] = 'HI! Starting the\nstream'
+        self.button_menu[menu][sub_menu]['select'] = None
+        self.button_menu[menu][sub_menu]['left'] = None
+        self.button_menu[menu][sub_menu]['right'] = None
+        self.button_menu[menu][sub_menu]['up'] = self.next_menu
+        self.button_menu[menu][sub_menu]['down'] = self.prev_menu
+        
         menu = -3
         sub_menu = False
         self.button_menu[menu] = {}
@@ -1024,6 +1035,7 @@ class coop_controller:
         self.display_off_time = self.cur_time + dt.timedelta(seconds=10)
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
+        self.cur_menu = -4
         testing_colors = False
         if testing_colors:
             self.lcd.message = self.display_message
