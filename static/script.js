@@ -50,5 +50,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Start the update loop
-    setInterval(fetchUpdate, updateInterval);
+    // setInterval(fetchUpdate, updateInterval);
 });
