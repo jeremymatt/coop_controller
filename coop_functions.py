@@ -984,6 +984,7 @@ class coop_controller:
             self.cur_menu = -3
             self.in_sub_menu = False
             
+            print('\n\nstopping door\n\n')
             self.door_stop()
             self.queue_notification(msg)
             
