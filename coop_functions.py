@@ -328,8 +328,12 @@ class coop_controller:
                 self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 self.display_off_time = self.cur_time + self.long_time
                 self.in_error_state = True
-                self.print_state('IN ERROR STATE\n')
+                self.display_on()
+                self.cur_menu = -3
+                self.in_sub_menu = False
+                self.update_display()
                 self.lcd.message = self.error_msg
+            self.print_state('IN ERROR STATE\n')
             self.get_cur_time()
             self.check_send_notification_time()
 
@@ -337,12 +341,6 @@ class coop_controller:
             self.in_error_state = False
             self.disp_blink_time = None
                     
-        if self.in_error_state:
-            self.display_on()
-            # self.cur_menu = -3
-            # self.in_sub_menu = False
-            self.update_display()
-            
 
     def return_current_state(self):
 
