@@ -21,14 +21,14 @@ function updatePage(data,document) {
     console.log("Data received in updatePage:", data);
 
     // Update text fields
-    document.getElementById("door_current_state").innerText = data.door_current_state;
-    document.getElementById("door_error_state").innerText = data.door_error_state;
-    document.getElementById("door_auto_state").innerText = data.door_auto_state;
+    // document.getElementById("door_current_state").innerText = data.door_current_state;
+    // document.getElementById("door_error_state").innerText = data.door_error_state;
+    // document.getElementById("door_auto_state").innerText = data.door_auto_state;
 
-    document.getElementById("light_current_state").innerText = data.light_current_state;
-    document.getElementById("light_auto_state").innerText = data.light_auto_state;
+    // document.getElementById("light_current_state").innerText = data.light_current_state;
+    // document.getElementById("light_auto_state").innerText = data.light_auto_state;
 
-    document.getElementById("system_time").innerText = data.system_time;
+    // document.getElementById("system_time").innerText = data.system_time;
 }
 
 
