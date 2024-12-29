@@ -472,7 +472,7 @@ class coop_controller:
                 f.write('   settings.door_lock_travel: {}\n'.format(settings.door_lock_travel))
                 f.write(' timedelta (extra door travel only): {}'.format(dt.timedelta(seconds=(settings.extra_door_travel))))
             
-        if self.cur_time>self.door_travel_stop_time:
+        if (self.cur_time>self.door_travel_stop_time) and not self.door_state_override:
             print('Stopped move at: {}'.format(self.cur_time))
             self.door_travel_stop_time = self.cur_time + self.long_time
             self.print_state_trigger = self.cur_time - dt.timedelta(seconds=1)
@@ -984,7 +984,6 @@ class coop_controller:
             self.cur_menu = -3
             self.in_sub_menu = False
             
-            print('\n\nstopping door\n\n')
             self.door_stop()
             self.queue_notification(msg)
             
