@@ -732,15 +732,16 @@ class coop_controller:
                         self.display_state = True
             
             self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
-            if isinstance(self.display_message,str):
-                self.msg = self.display_message
-            else:
-                self.msg = self.display_message()
-                
-            if self.prev_display_message != self.msg:
-                self.lcd.clear()
-                self.lcd.message = self.msg
-                self.prev_display_message = self.msg
+            if not isinstance(self.display_message,type(None)):
+                if isinstance(self.display_message,str):
+                    self.msg = self.display_message
+                else:
+                    self.msg = self.display_message()
+                    
+                if self.prev_display_message != self.msg:
+                    self.lcd.clear()
+                    self.lcd.message = self.msg
+                    self.prev_display_message = self.msg
 
         
     def override_door_raise(self):
