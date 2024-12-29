@@ -420,7 +420,7 @@ class coop_controller:
             
     def check_door(self):
         
-        if self.door_is_closed and self.door_is_open:
+        if self.door_is_closed and self.door_is_open and not self.error_state:
             string,parts = self.get_datetime_string(self.cur_time)
             msg = 'DOOR MALFUNCTION:\n  Both switches closed \n  time: {}'.format(string)
             self.error_msg = 'ERR:bth swch cls\nSelect ==> clear'
