@@ -1,4 +1,37 @@
-function sendCommand(command,document) {
+// function sendCommand(command,document) {
+//     console.log(`Sending command: ${command}`);
+//     fetch("/update", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ command }),
+//     })
+//     .then(response => {
+//         console.log(`Response status: ${response.status}`);
+//         return response.json();
+//     })
+//     .then(data => {
+//         console.log("Response data:", data);
+//         updatePage(data,document);
+//     })
+//     .catch(error => console.error("Error sending command:", error));
+// }
+
+
+// function updatePage(data,document) {
+//     console.log("Data received in updatePage:", data);
+
+//     // Update text fields
+//     // document.getElementById("door_current_state").innerText = data.door_current_state;
+//     // document.getElementById("door_error_state").innerText = data.door_error_state;
+//     // document.getElementById("door_auto_state").innerText = data.door_auto_state;
+
+//     document.getElementById("light_current_state").innerText = data.light_current_state;
+//     // document.getElementById("light_auto_state").innerText = data.light_auto_state;
+
+//     // document.getElementById("system_time").innerText = data.system_time;
+// }
+
+function sendCommand(command) {
     console.log(`Sending command: ${command}`);
     fetch("/update", {
         method: "POST",
@@ -11,24 +44,23 @@ function sendCommand(command,document) {
     })
     .then(data => {
         console.log("Response data:", data);
-        updatePage(data,document);
+        updatePage(data);
     })
     .catch(error => console.error("Error sending command:", error));
 }
 
-
-function updatePage(data,document) {
+function updatePage(data) {
     console.log("Data received in updatePage:", data);
 
     // Update text fields
-    // document.getElementById("door_current_state").innerText = data.door_current_state;
-    // document.getElementById("door_error_state").innerText = data.door_error_state;
-    // document.getElementById("door_auto_state").innerText = data.door_auto_state;
+    document.getElementById("door_current_state").innerText = data.door_current_state;
+    document.getElementById("door_error_state").innerText = data.door_error_state;
+    document.getElementById("door_auto_state").innerText = data.door_auto_state;
 
     document.getElementById("light_current_state").innerText = data.light_current_state;
-    // document.getElementById("light_auto_state").innerText = data.light_auto_state;
+    document.getElementById("light_auto_state").innerText = data.light_auto_state;
 
-    // document.getElementById("system_time").innerText = data.system_time;
+    document.getElementById("system_time").innerText = data.system_time;
 }
 
 
