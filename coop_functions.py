@@ -482,7 +482,8 @@ class coop_controller:
             self.door_is_open,
             self.door_is_opening,
             self.door_opening_complete,
-            self.door_state_override]
+            self.door_state_override,
+            self.error_state]
         
         # if self.door_open_time and not (self.door_is_open or self.door_is_opening or self.door_opening_complete) and not self.door_state_override:
         if self.door_open_time and not any(open_flags):
@@ -496,7 +497,8 @@ class coop_controller:
             self.door_is_closed,
             self.door_is_closing,
             self.door_closing_complete,
-            self.door_state_override]
+            self.door_state_override,
+            self.error_state]
         
         # if not self.door_open_time and not (self.door_is_closed or self.door_is_closing or self.door_closing_complete) and not self.door_state_override:
         if not self.door_open_time and not any(close_flags):
