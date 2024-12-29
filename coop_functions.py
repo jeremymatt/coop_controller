@@ -979,22 +979,20 @@ class coop_controller:
             
     def check_door_move_time(self):
         if self.cur_time > self.door_move_end_time:
+            self.door_stop()
             string,parts = self.get_datetime_string(self.cur_time)
             if self.door_is_closing:
                 msg = 'DOOR MALFUNCTION:\n  Door Didn\'t close \n  time: {}'.format(string)
                 self.error_msg = 'ERR: clse failed\nSelect ==> clear'
                 self.error_state_text = 'Failed to close'
-                self.door_stop()
             elif self.door_is_opening:
                 msg = 'DOOR MALFUNCTION:\n  Door Didn\'t open \n  time: {}'.format(string)
                 self.error_msg = 'ERR: open failed\nSelect ==> clear'
                 self.error_state_text = 'Failed to open'
-                self.door_stop()
             else:
                 msg = 'DOOR MALFUNCTION:\n  Not sure what the problem is \n  time: {}'.format(string)
                 self.error_msg = 'ERR: unk failure\nSelect ==> clear'
                 self.error_state_text = 'Unknown error set by check_door_move_time'
-                self.door_stop()
               
                 
             self.error_state = True
@@ -1010,12 +1008,10 @@ class coop_controller:
             if self.display_time_exceeded:
                 if self.door_state_override or self.light_state_override:
                     self.cur_menu = -2
-                    self.display_message = self.disp_override()
                     self.in_sub_menu = False
                     self.update_display()
                 elif self.light_state_override_timer:
-                    self.cur_menu = -2
-                    self.display_message = self.disp_light_override_timer()
+                    self.cur_menu = 5
                     self.in_sub_menu = False
                     self.update_display()
                 else:
@@ -1045,6 +1041,7 @@ class coop_controller:
                 self.lcd.color = color
                 time.sleep(5)
         self.prev_display_message = 'none'
+        self.update_display()
         
     
     def display_on(self):
