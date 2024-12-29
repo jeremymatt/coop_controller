@@ -701,7 +701,7 @@ class coop_controller:
             
             self.button_menu[self.cur_menu][self.in_sub_menu][button]()
             
-            self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
+            
             
     def cancel_error(self):
         print('\n\nCANCELING ERROR\n\n')
@@ -730,7 +730,8 @@ class coop_controller:
                         self.current_lcd_color = lcd_green
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = True
-
+            
+            self.display_message = self.button_menu[self.cur_menu][self.in_sub_menu]['msg']
             if isinstance(self.display_message,str):
                 self.msg = self.display_message
             else:
