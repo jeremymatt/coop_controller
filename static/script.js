@@ -26,9 +26,9 @@ function updatePage(data,document) {
     // document.getElementById("door_auto_state").innerText = data.door_auto_state;
 
     // document.getElementById("light_current_state").innerText = data.light_current_state;
-    // document.getElementById("light_auto_state").innerText = data.light_auto_state;
+    document.getElementById("light_auto_state").innerText = data.light_auto_state;
 
-    document.getElementById("system_time").innerText = data.system_time;
+    // document.getElementById("system_time").innerText = data.system_time;
 }
 
 
