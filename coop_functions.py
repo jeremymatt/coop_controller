@@ -328,12 +328,7 @@ class coop_controller:
                 self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 self.display_off_time = self.cur_time + self.long_time
                 self.in_error_state = True
-                self.display_on()
-                self.cur_menu = -3
-                self.in_sub_menu = False
-                self.update_display()
-                self.lcd.message = self.error_msg
-            self.print_state('IN ERROR STATE\n')
+                self.print_state('IN ERROR STATE\n')
             self.get_cur_time()
             self.check_send_notification_time()
 
@@ -341,6 +336,13 @@ class coop_controller:
             self.in_error_state = False
             self.disp_blink_time = None
                     
+        if self.in_error_state:
+            self.display_on()
+            self.lcd.message = self.error_msg
+            self.cur_menu = -3
+            self.in_sub_menu = False
+            self.update_display()
+            
 
     def return_current_state(self):
 
@@ -707,7 +709,8 @@ class coop_controller:
         self.cur_menu = 1
         self.error_state = False
         self.in_error_state = False
-        self.lcd.color = lcd_green
+        self.current_lcd_color = lcd_green
+        self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=settings.screen_on_time)
         self.update_display()
 
@@ -720,11 +723,11 @@ class coop_controller:
                     self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 if self.cur_time>self.disp_blink_time:
                     if self.display_state:
-                        self.lcd.color = lcd_red
+                        self.current_lcd_color = lcd_red
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = False
                     else:
-                        self.lcd.color = lcd_green
+                        self.current_lcd_color = lcd_green
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = True
 
@@ -1029,8 +1032,7 @@ class coop_controller:
     
     def display_on(self):
         self.display_is_on = True
-        if not self.in_error_state:
-            self.lcd.color = lcd_green
+        self.lcd.color = self.current_lcd_color
         
     def display_off(self):
         self.display_is_on = False
@@ -1071,6 +1073,7 @@ class coop_controller:
         self.disp_blink_time = None
         self.msg = 'None'
         self.command_queue = []
+        self.current_lcd_color = lcd_green
         
        
     def init_pins(self):
