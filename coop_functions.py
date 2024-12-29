@@ -973,14 +973,17 @@ class coop_controller:
                 msg = 'DOOR MALFUNCTION:\n  Door Didn\'t close \n  time: {}'.format(string)
                 self.error_msg = 'ERR: clse failed\nSelect ==> clear'
                 self.error_state_text = 'Failed to close'
+                self.door_stop()
             elif self.door_is_opening:
                 msg = 'DOOR MALFUNCTION:\n  Door Didn\'t open \n  time: {}'.format(string)
                 self.error_msg = 'ERR: open failed\nSelect ==> clear'
                 self.error_state_text = 'Failed to open'
+                self.door_stop()
             else:
                 msg = 'DOOR MALFUNCTION:\n  Not sure what the problem is \n  time: {}'.format(string)
                 self.error_msg = 'ERR: unk failure\nSelect ==> clear'
                 self.error_state_text = 'Unknown error set by check_door_move_time'
+                self.door_stop()
               
                 
             self.error_state = True
