@@ -387,35 +387,6 @@ class coop_controller:
             else:
                 state['door_motor_state'] = 'Unknown error'
 
-        # state = {}
-        # if self.door_is_open and self.door_is_closed:
-        #     state['door_current_state'] = "Unknown"
-        #     if self.door_state_override:
-        #         state['door_auto_state'] = "Overriden"
-        #     else:
-        #         state['door_auto_state'] = "Auto"
-        # elif self.door_is_open and not self.door_is_closed:
-        #     state['door_current_state'] = 'Fully open'
-        #     delta_time_string = get_time_delta_string(self.cur_time,self.close_time)
-        #     time_string,parts = self.get_datetime_string(self.close_time)
-        #     state['door_auto_state'] = 'Closing at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
-        # elif not self.door_is_open and self.door_is_closed:
-        #     state['door_current_state'] = 'Closed'
-        #     delta_time_string = get_time_delta_string(self.cur_time,self.sunrise)
-        #     time_string,parts = self.get_datetime_string(self.sunrise)
-        #     state['door_auto_state'] = 'Opening at {} ({})'.format(time_string.split(' ')[1],delta_time_string)
-        # else:
-        #     print('\n\nDoor is stopped: {}'.format(self.door_is_stopped))
-        #     if self.door_is_stopped:
-        #         state['door_current_state'] = 'Stopped'
-        #     else:
-        #         if self.door_is_opening:
-        #             state['door_current_state'] = 'Opening'
-        #         elif self.door_is_closing:
-        #             state['door_current_state'] = 'Closing'
-        #         else:
-        #             state['door_current_state'] = 'Partially open'
-
         if self.error_state:
             state['door_error_state'] = self.error_state_text
         else:
@@ -1007,8 +978,7 @@ class coop_controller:
                 self.get_sunrise_sunset()
             
     def check_door_move_time(self):
-        if self.cur_time > self.door_move_end_time:
-            self.door_stop()
+        if (self.cur_time > self.door_move_end_time) and not self.error_state:
             string,parts = self.get_datetime_string(self.cur_time)
             if self.door_is_closing:
                 msg = 'DOOR MALFUNCTION:\n  Door Didn\'t close \n  time: {}'.format(string)
