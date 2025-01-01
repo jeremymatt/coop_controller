@@ -111,15 +111,15 @@ def get_time_delta_string(earlier_time,later_time):
     if delta<-3600:
         delta+=3600*24
     print('{}-{}={}'.format(later_time,earlier_time,delta))
-    prefix = ""
+    suffix = ""
     if delta<0:
         delta *= -1
-        prefix = "(-)"
+        suffix = " ago"
     
     hrs = str(delta//3600)
     mins = str(delta%3600//60)
     secs = str(delta%3600%60)
-    return "{}{}hrs {}mins".format(prefix,hrs,mins)
+    return "{}hrs {}mins{}".format(hrs,mins,suffix)
 
 def send_crash_notification(logfile_name):
     #SEnd a text message crash notification.  If that fails, write the failure 
