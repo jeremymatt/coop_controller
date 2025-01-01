@@ -54,6 +54,7 @@ function updatePage(data) {
 
     // Update text fields
     document.getElementById("door_current_state").innerText = data.door_current_state;
+    document.getElementById("door_motor_state").innerText = data.door_motor_state;
     document.getElementById("door_error_state").innerText = data.door_error_state;
     document.getElementById("door_auto_state").innerText = data.door_auto_state;
 
