@@ -24,8 +24,9 @@ import settings
 def start_ngrok(port, static_ngrok_url):
     """Start Ngrok with the specified static URL."""
     try:
+        ngrok_path = '/usr/local/bin/ngrok'
         ngrok_process = subprocess.Popen(
-            ["ngrok", "http", str(port), "--url", static_ngrok_url],
+            [ngrok_path, "http", str(port), "--url", static_ngrok_url],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True
