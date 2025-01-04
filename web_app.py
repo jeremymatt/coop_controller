@@ -2,6 +2,8 @@ from flask import Flask, session, request, redirect, jsonify, render_template
 import hashlib
 import coop_functions as CF
 import time
+import os
+import settings
 
 
 
@@ -9,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
 
 # Load credentials
-with open('credentials.config', 'r') as file:
+with open(os.path.join(settings.path_to_repo,'credentials.config'), 'r') as file:
     credentials = file.read().splitlines()
     USERNAME_HASH = credentials[0].strip()
     PASSWORD_HASH = credentials[1].strip()

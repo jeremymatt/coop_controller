@@ -162,8 +162,7 @@ class coop_controller:
         self.logfile_name = logfile_name
         #Get the current directory, generate the log directory path, and make
         #the directory if it doesn't exist
-        cd = os.getcwd()
-        self.log_dir = os.path.join(cd,'logs')
+        self.log_dir = os.path.join(settings.path_to_repo,'logs')
         if not os.path.isdir(self.log_dir):
             os.makedirs(self.log_dir)
             

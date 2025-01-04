@@ -27,7 +27,7 @@ fi
 pip install -r requirements.txt
 
 # Define the cron job
-CRON_ENTRY="@reboot $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py >> $HOME/coop_controller/cron.log 2>&1"
+CRON_ENTRY="@reboot $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py > $HOME/coop_controller/cron.log 2>&1"
 
 # Check if the entry already exists to avoid duplicates
 (crontab -l 2>/dev/null | grep -Fx "$CRON_ENTRY") || (crontab -l 2>/dev/null; echo "$CRON_ENTRY") | crontab -

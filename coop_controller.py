@@ -54,10 +54,10 @@ def signal_handler(sig, frame):
 
 
 if __name__ == '__main__':
-    
+    port = settings.port
 
     # Start Ngrok
-    ngrok_process = start_ngrok(settings.port, settings.ngrok_static_url)
+    ngrok_process = start_ngrok(port, settings.ngrok_static_url)
     if not ngrok_process:
         print("Ngrok failed to start. Exiting.")
         exit(1)
