@@ -16,6 +16,7 @@ import signal
 import sys
 import hashlib
 import web_app as WA
+import settings
 
 # app = Flask(__name__)
 # app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
@@ -53,11 +54,10 @@ def signal_handler(sig, frame):
 
 
 if __name__ == '__main__':
-    port = 8000
-    ngrok_static_url = 'chickencoop.fun'
+    
 
     # Start Ngrok
-    ngrok_process = start_ngrok(port, ngrok_static_url)
+    ngrok_process = start_ngrok(settings.port, settings.ngrok_static_url)
     if not ngrok_process:
         print("Ngrok failed to start. Exiting.")
         exit(1)
