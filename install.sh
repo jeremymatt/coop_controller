@@ -7,4 +7,5 @@ curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
 	&& sudo apt install ngrok
 
 python -m venv ~/.venv
+source ~/.venv/bin/activate
 pip install -r requirements.txt
