@@ -6,9 +6,6 @@ curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
 	&& sudo apt install ngrok
 
 
-<<<<<<< HEAD
-ngrok http --url=chickencoop.fun 8000
-=======
 ngrok http --url=chickencoop.fun 8000
 
 Imports:
@@ -28,4 +25,3 @@ add the following at the end of the file:
 @reboot $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py > $HOME/coop_controller/cron.log 2>&1
 
 
->>>>>>> development
