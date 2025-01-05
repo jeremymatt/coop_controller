@@ -11,6 +11,7 @@ settings.py
 cc2.py
 website_credentials.env
 flask_credentials.env
+logrotate_cron.conf
 
 #Crash report & log folders
 CRASH_REPORT/

@@ -16,7 +16,7 @@ while run:
         run = False
         write_config = True
         if os.path.isfile(credentials_fn):
-            overwrite = input("Found existing credentials.config file.  Overwrite? (y/n)")
+            overwrite = input("Found existing website_credentials.env file.  Overwrite? (y/n)")
             if overwrite.lower() != 'y':
                 write_config = False
                 print("Exiting")
