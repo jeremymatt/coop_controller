@@ -48,8 +48,8 @@ colors_dict = {
 lcd_red = [0,0,0]
 lcd_green = [100,0,0]
 
-lcd_primary_color = lcd_red
-lcd_secondary_color = lcd_off
+lcd_primary_color = lcd_green
+lcd_secondary_color = lcd_red
 
         
 def run_coop_controller(command_queue, response_queue):
@@ -1049,7 +1049,7 @@ class coop_controller:
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
         self.cur_menu = -4
-        testing_colors = True
+        testing_colors = False
         if testing_colors:
             self.lcd.message = self.display_message
             print('\n\nTESTING COLORS\n\n')
@@ -1059,6 +1059,7 @@ class coop_controller:
                 self.lcd.message = key
                 self.lcd.color = colors_dict[key]
                 time.sleep(5)
+            self.current_lcd_color = lcd_primary_color
         self.prev_display_message = 'none'
         self.update_display()
         

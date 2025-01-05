@@ -64,7 +64,7 @@ EOL"
 sudo chmod +x $LOGROTATE_CRON
 
 # Define the cron job
-CRON_ENTRY="@reboot PATH=/usr/local/bin:/usr/bin:/bin $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py > $HOME/coop_controller/logs/cron.log 2>&1"
+CRON_ENTRY="@reboot PATH=/usr/local/bin:/usr/bin:/bin $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py >> $HOME/coop_controller/logs/cron.log 2>&1"
 
 # Check if the entry already exists to avoid duplicates
 (crontab -l 2>/dev/null | grep -Fx "$CRON_ENTRY") || (crontab -l 2>/dev/null; echo "$CRON_ENTRY") | crontab -
