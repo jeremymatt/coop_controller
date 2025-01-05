@@ -11,7 +11,8 @@ Instructions to get code to Run at boot:
 crontab -e
 select nano as editor
 add the following at the end of the file:
-@reboot python /home/<user>/github/coop_controller/coop_controller.py >> /home/<user>/github/coop_controller/cron.log 2>&1
+@reboot python /home/<user>/github/coop_controller/coop_controller.py > /home/<user>/github/coop_controller/cron.log 2>&1
+@reboot $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py > $HOME/coop_controller/cron.log 2>&1
 
 
 

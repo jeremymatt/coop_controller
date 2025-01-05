@@ -4,11 +4,19 @@ import coop_functions as CF
 import time
 import os
 import settings
+from dotenv import load_dotenv
 
-
+# Load environment variables from the credentials file
+load_dotenv(os.path.join(settings.path_to_repo, "flask_credentials.env"))
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # Replace with a strong secret key
+
+# Get the secret key from the credentials file
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
+
+if app.secret_key is None:
+    raise ValueError("No secret key found. Please ensure the credentials file is correctly set up.")
+
 
 # Load credentials
 with open(os.path.join(settings.path_to_repo,'credentials.config'), 'r') as file:

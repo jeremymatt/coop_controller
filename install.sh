@@ -26,6 +26,17 @@ fi
 # Install the required dependencies
 pip install -r requirements.txt
 
+# Generate a secret key and store it in a credentials file
+SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))")
+CREDENTIALS_FILE="$HOME/coop_controller/flask_credentials.env"
+
+mkdir -p "$HOME/coop_controller"  # Ensure the directory exists
+echo "FLASK_SECRET_KEY=$SECRET_KEY" > "$CREDENTIALS_FILE"
+chmod 600 "$CREDENTIALS_FILE"  # Restrict permissions to the file
+
+# Inform the user
+echo "A secret key has been generated and stored in $CREDENTIALS_FILE"
+
 # Define the cron job
 CRON_ENTRY="@reboot $HOME/.venv/bin/python $HOME/coop_controller/coop_controller.py > $HOME/coop_controller/cron.log 2>&1"
 
