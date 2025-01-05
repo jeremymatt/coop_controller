@@ -9,6 +9,10 @@ __pycache__/
 #specific files
 settings.py
 cc2.py
+website_credentials.env
+flask_credentials.env
+logrotate_cron.conf
+logrotate_status
 
 #Crash report & log folders
 CRASH_REPORT/
