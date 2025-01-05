@@ -32,6 +32,24 @@ lcd_blue = [0,0,100]
 lcd_yellow = [100,100,0]
 lcd_teal = [0,100,100]
 lcd_magenta = [100,0,100]
+lcd_off = [0,0,0]
+
+colors_dict = {
+    'red':lcd_red,
+    'green':lcd_green,
+    'blue':lcd_blue,
+    'yellow':lcd_yellow,
+    'teal':lcd_teal,
+    'magenta':lcd_magenta,
+    'off':lcd_off
+}
+
+#Test go back to original color settings
+lcd_red = [0,0,0]
+lcd_green = [100,0,0]
+
+lcd_primary_color = lcd_red
+lcd_secondary_color = lcd_off
 
         
 def run_coop_controller(command_queue, response_queue):
@@ -719,7 +737,7 @@ class coop_controller:
         self.cur_menu = 1
         self.error_state = False
         self.in_error_state = False
-        self.current_lcd_color = lcd_green
+        self.current_lcd_color = lcd_primary_color
         self.display_on()
         self.display_off_time = self.cur_time + dt.timedelta(seconds=settings.screen_on_time)
         self.update_display()
@@ -733,11 +751,11 @@ class coop_controller:
                     self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                 if self.cur_time>self.disp_blink_time:
                     if self.display_state:
-                        self.current_lcd_color = lcd_red
+                        self.current_lcd_color = lcd_secondary_color
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = False
                     else:
-                        self.current_lcd_color = lcd_green
+                        self.current_lcd_color = lcd_primary_color
                         self.disp_blink_time = self.cur_time + dt.timedelta(seconds=1)
                         self.display_state = True
             
@@ -1030,13 +1048,15 @@ class coop_controller:
         # self.display_message = 'Welcome to the\nJungle!'
         self.display_message = 'HI! Starting the\nstream'
         self.cur_menu = -4
-        testing_colors = False
+        testing_colors = True
         if testing_colors:
             self.lcd.message = self.display_message
             print('\n\nTESTING COLORS\n\n')
-            for color in [lcd_red,lcd_green,lcd_blue,lcd_magenta,lcd_teal,lcd_yellow]:
-                print(color)
-                self.lcd.color = color
+            for key in colors_dict.keys():
+                print(key)
+                self.lcd.clear()
+                self.lcd.message = key
+                self.lcd.color = colors_dict[key]
                 time.sleep(5)
         self.prev_display_message = 'none'
         self.update_display()
@@ -1085,7 +1105,7 @@ class coop_controller:
         self.disp_blink_time = None
         self.msg = 'None'
         self.command_queue = []
-        self.current_lcd_color = lcd_green
+        self.current_lcd_color = lcd_primary_color
         
        
     def init_pins(self):
