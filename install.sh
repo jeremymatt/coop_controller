@@ -25,7 +25,7 @@ fi
 
 echo ""
 # Install the required dependencies
-pip install -r requirements.txt
+pip install -r $HOME/coop_controller/requirements.txt
 
 echo ""
 # Generate a secret key and store it in a credentials file
@@ -44,12 +44,16 @@ LOGROTATE_CONF="$HOME/coop_controller/logrotate_cron.conf"
 cat <<EOL > "$LOGROTATE_CONF"
 /home/$USER/coop_controller/logs/cron.log {
     rotate 10
-    weekly
+    daily
     missingok
     notifempty
     copytruncate
 }
 EOL
+
+# Run logrotate with a user-specific state file
+/usr/sbin/logrotate -s $HOME/coop_controller/logrotate_status $LOGROTATE_CONF
+
 
 # Set up logrotate to use this configuration
 LOGROTATE_CRON="/etc/cron.daily/logrotate_cron"
@@ -65,7 +69,13 @@ CRON_ENTRY="@reboot PATH=/usr/local/bin:/usr/bin:/bin $HOME/.venv/bin/python $HO
 # Check if the entry already exists to avoid duplicates
 (crontab -l 2>/dev/null | grep -Fx "$CRON_ENTRY") || (crontab -l 2>/dev/null; echo "$CRON_ENTRY") | crontab -
 
-echo "Cron job added successfully. Use 'crontab -l' to verify."
+
+# Add a cron job to rotate logs at 11:50 PM daily
+LOGROTATE_CRON_ENTRY="50 23 * * * /usr/sbin/logrotate -s $HOME/coop_controller/logrotate_status $HOME/coop_controller/logrotate_cron.conf"
+(crontab -l 2>/dev/null | grep -Fx "$LOGROTATE_CRON_ENTRY") || (crontab -l 2>/dev/null; echo "$LOGROTATE_CRON_ENTRY") | crontab -
+
+echo "Cron jobs to run controller and rotate cron logs added successfully. Use 'crontab -l' to verify."
+
 echo "enabling i2c"
 sudo sudo raspi-config nonint do_i2c 0
 echo ""
