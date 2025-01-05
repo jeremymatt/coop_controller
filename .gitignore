@@ -9,7 +9,8 @@ __pycache__/
 #specific files
 settings.py
 cc2.py
-credentials.config
+website_credentials.env
+flask_credentials.env
 
 #Crash report & log folders
 CRASH_REPORT/

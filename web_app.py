@@ -19,7 +19,7 @@ if app.secret_key is None:
 
 
 # Load credentials
-with open(os.path.join(settings.path_to_repo,'credentials.config'), 'r') as file:
+with open(os.path.join(settings.path_to_repo,'website_credentials.env'), 'r') as file:
     credentials = file.read().splitlines()
     USERNAME_HASH = credentials[0].strip()
     PASSWORD_HASH = credentials[1].strip()
