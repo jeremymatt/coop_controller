@@ -6,10 +6,7 @@ Created on Sun Nov 14 12:14:26 2021
 """
 
 import os
-if os.path.basename(os.getcwd()) == "coop_controller":
-    path_to_repo = os.getcwd()
-else:
-    path_to_repo = os.path.join(os.getcwd(),'coop_controller')
+path_to_repo = os.path.join(os.path.expanduser('~'),'coop_controller')
 
 VERBOSE = False
 
