@@ -989,6 +989,7 @@ class coop_controller:
         month,day,hour,minute,second = parts
         if self.cur_day != day:
             if settings.restart_daily:
+                print("\n\nRESTARTING AT {}-{} {}:{}:{}\n\n".format(month,day,hour,minute,second))
                 restart()
             else:
                 self.cur_day = day
