@@ -44,10 +44,6 @@ colors_dict = {
     'off':lcd_off
 }
 
-#Test go back to original color settings
-lcd_red = [0,0,0]
-lcd_green = [100,0,0]
-
 lcd_primary_color = lcd_green
 lcd_secondary_color = lcd_red
 
